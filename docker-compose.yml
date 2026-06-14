@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-0jon!hdc5a_vgouj9a=51w0mkn!#esnh&3%mn#@7faz^*2b^b$

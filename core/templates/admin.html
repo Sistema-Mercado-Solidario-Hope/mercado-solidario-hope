@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Solidário – Administração</title>
+    <!-- Fontes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <!-- OVERLAY MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="sidebar-header">
+            <h1 class="poppins-bold brand-title">Mercado<br>Solidário</h1>
+            <p class="poppins-regular brand-subtitle">Painel Administrativo</p>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Navegação principal">
+            <ul>
+                <li class="active">
+                    <a href="admin.html" class="poppins-medium" aria-current="page">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="9"></rect>
+                            <rect x="14" y="3" width="7" height="5"></rect>
+                            <rect x="14" y="12" width="7" height="9"></rect>
+                            <rect x="3" y="16" width="7" height="5"></svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="visaoGeralEstoque.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                            <line x1="12" y1="22.08" x2="12" y2="12"/>
+                        </svg>
+                        <span>Estoque</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="familia-listagem.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                        <span>Cadastros</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="frenteCaixa.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"/>
+                            <line x1="12" y1="10" x2="12" y2="10"/>
+                            <line x1="2" y1="10" x2="22" y2="10"/>
+                        </svg>
+                        <span>Frente de Caixa</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="cadastro-familia.html" class="btn-new-register poppins-semibold" style="text-align: center; display: block; text-decoration: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Novo Cadastro</span>
+            </a>
+            <hr class="sidebar-divider">
+            <ul>
+                <li>
+                    <a href="configuracoes.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Configurações</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html" class="poppins-medium text-exit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Sair</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- TOPBAR -->
+    <header class="topbar" id="topbar">
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="topbar-left">
+            <h2 class="poppins-bold topbar-title">Administração Geral</h2>
+            <div class="tabs-header" style="margin-left: 20px; display: flex; gap: 8px;">
+                <button type="button" class="admin-tab active" data-tab="perfil">Meu Perfil</button>
+                <button type="button" class="admin-tab" data-tab="usuarios">Funcionários</button>
+                <button type="button" class="admin-tab" data-tab="historico">Histórico</button>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+            <!-- Notificações -->
+            <div class="notification-wrapper">
+                <button type="button" class="icon-notification-btn" id="notificationBtn" aria-label="Notificações" aria-haspopup="true" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-dot" aria-label="Notificações não lidas"></span>
+                </button>
+
+                <div class="notification-dropdown" id="notificationDropdown" aria-label="Lista de notificações" role="menu">
+                    <div class="notification-dropdown-header poppins-semibold">
+                        <span>Notificações</span>
+                        <button type="button" class="mark-all-read poppins-medium" id="markAllReadBtn">Marcar todas como lidas</button>
+                    </div>
+                    <div class="notification-list" id="notificationList"></div>
+                </div>
+            </div>
+
+            <!-- Perfil -->
+            <div class="profile-avatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Foto de perfil">
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content" id="mainContent">
+        <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+        <!-- PAINEL PERFIL -->
+        <section class="admin-panel active" id="panel-perfil">
+            <div class="profile-layout" style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+                <div class="profile-card avatar-card" style="background:#FFF; padding:24px; border-radius:12px; border:1px solid var(--border-color); text-align:center;">
+                    <div class="avatar-wrapper" style="position:relative; display:inline-block; margin: 0 auto 16px;">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Foto Avatar" id="adminAvatar" style="width:120px; height:120px; border-radius:50%; object-fit:cover;">
+                        <label for="uploadAdminAvatar" style="position:absolute; bottom:0; right:0; background:var(--purple-primary); color:#FFF; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;">📷</label>
+                        <input type="file" id="uploadAdminAvatar" accept="image/*" style="display:none;">
+                    </div>
+                    <h3 class="poppins-bold" id="adminNome" style="font-size:18px; color:var(--text-dark);">Administrador</h3>
+                    <span class="badge-role poppins-semibold" style="display:inline-block; margin-top:4px; padding:4px 12px; background:var(--purple-bg); color:var(--purple-primary); border-radius:100px; font-size:12px;">Administrador</span>
+                </div>
+
+                <div class="profile-details" style="display:flex; flex-direction:column; gap:24px;">
+                    <!-- Dados Pessoais -->
+                    <div class="profile-card info-card" style="background:#FFF; padding:24px; border-radius:12px; border:1px solid var(--border-color);">
+                        <h4 class="poppins-bold" style="font-size:16px; margin-bottom:16px; color:var(--text-dark);">Dados Pessoais</h4>
+                        <form id="formAdminDados">
+                            <div class="form-group">
+                                <label class="poppins-medium" for="adminNomeCompleto">Nome Completo *</label>
+                                <input type="text" id="adminNomeCompleto" class="form-input poppins-regular" required>
+                            </div>
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+                                <div class="form-group">
+                                    <label class="poppins-medium" for="adminEmail">E-mail</label>
+                                    <input type="email" id="adminEmail" class="form-input poppins-regular" readonly style="background:#F3F4F6;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="poppins-medium" for="adminTelefone">Telefone *</label>
+                                    <input type="tel" id="adminTelefone" class="form-input poppins-regular" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-save poppins-bold" style="margin-top:20px; padding:12px 24px; background:var(--purple-primary); color:#FFF; border:none; border-radius:8px; cursor:pointer;">Salvar Alterações</button>
+                        </form>
+                    </div>
+
+                    <!-- Alterar Senha -->
+                    <div class="profile-card password-card" style="background:#FFF; padding:24px; border-radius:12px; border:1px solid var(--border-color);">
+                        <h4 class="poppins-bold" style="font-size:16px; margin-bottom:16px; color:var(--text-dark);">Segurança</h4>
+                        <form id="formAdminSenha">
+                            <div class="form-group">
+                                <label class="poppins-medium" for="adminSenhaAtual">Senha Atual *</label>
+                                <input type="password" id="adminSenhaAtual" class="form-input poppins-regular" placeholder="••••••••" required>
+                            </div>
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+                                <div class="form-group">
+                                    <label class="poppins-medium" for="adminNovaSenha">Nova Senha *</label>
+                                    <input type="password" id="adminNovaSenha" class="form-input poppins-regular" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="poppins-medium" for="adminConfirmarSenha">Confirmar Nova Senha *</label>
+                                    <input type="password" id="adminConfirmarSenha" class="form-input poppins-regular" placeholder="Repita a senha" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-save poppins-bold" style="margin-top:20px; padding:12px 24px; background:var(--purple-primary); color:#FFF; border:none; border-radius:8px; cursor:pointer;">Alterar Senha</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAINEL USUÁRIOS (FUNCIONÁRIOS) -->
+        <section class="admin-panel" id="panel-usuarios">
+            <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <div>
+                    <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark);">Controle de Acessos</h3>
+                    <p class="poppins-regular" style="font-size:13px; color:var(--text-muted);">Cadastre voluntários e controle as permissões de acesso.</p>
+                </div>
+                <button type="button" class="btn-save poppins-bold" id="btnNovoUsuario" style="padding:12px 24px; background:var(--purple-primary); color:#FFF; border:none; border-radius:8px; cursor:pointer;" onclick="abrirModalUsuario('Novo Funcionário')">
+                    + Novo Usuário
+                </button>
+            </div>
+
+            <div class="table-panel" style="background:#FFF; padding:24px; border-radius:12px; border:1px solid var(--border-color);">
+                <div class="table-header" style="margin-bottom:16px;">
+                    <input type="search" id="searchUsuarios" class="poppins-regular" placeholder="Buscar funcionário por nome ou email..." style="padding:10px 16px; border:1px solid var(--border-color); border-radius:8px; width:320px; outline:none;">
+                </div>
+                <div class="table-responsive">
+                    <table class="estoque-table" style="width:100%; border-collapse:collapse; text-align:left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color);">
+                                <th style="padding:12px 16px;">Nome</th>
+                                <th style="padding:12px 16px;">Email</th>
+                                <th style="padding:12px 16px;">Cargo</th>
+                                <th style="padding:12px 16px;">Status</th>
+                                <th style="padding:12px 16px;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAINEL HISTÓRICO (AUDITORIA) -->
+        <section class="admin-panel" id="panel-historico">
+            <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <div>
+                    <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark);">Logs de Atividades</h3>
+                    <p class="poppins-regular" style="font-size:13px; color:var(--text-muted);">Auditoria das ações críticas realizadas no sistema.</p>
+                </div>
+                <button type="button" class="poppins-bold" id="btnLimparHistorico" style="padding:12px 24px; background:#FEF2F2; color:var(--danger); border:1px solid #FCA5A5; border-radius:8px; cursor:pointer;">
+                    Limpar Histórico
+                </button>
+            </div>
+
+            <div class="table-panel" style="background:#FFF; padding:24px; border-radius:12px; border:1px solid var(--border-color);">
+                <div class="table-header" style="margin-bottom:16px;">
+                    <input type="search" id="searchHistorico" class="poppins-regular" placeholder="Buscar logs por usuário, ação ou descrição..." style="padding:10px 16px; border:1px solid var(--border-color); border-radius:8px; width:320px; outline:none;">
+                </div>
+                <div class="table-responsive">
+                    <table class="estoque-table" style="width:100%; border-collapse:collapse; text-align:left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color);">
+                                <th style="padding:12px 16px; width: 200px;">Data/Hora</th>
+                                <th style="padding:12px 16px; width: 180px;">Usuário</th>
+                                <th style="padding:12px 16px; width: 180px;">Ação</th>
+                                <th style="padding:12px 16px;">Descrição</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historicoTableBody">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL USUÁRIO -->
+        <div class="modal-overlay" id="modalUsuario" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
+            <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:480px; width:100%; position:relative;">
+                <button type="button" id="closeModalUsuario" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+                <h3 class="poppins-bold" id="modalUsuarioTitulo" style="font-size:18px; margin-bottom:20px; color:var(--text-dark);">Novo Funcionário</h3>
+                
+                <form id="formUsuario">
+                    <input type="hidden" id="userId">
+                    <div class="form-group">
+                        <label class="poppins-medium" for="usuarioNome">Nome Completo *</label>
+                        <input type="text" id="usuarioNome" class="form-input poppins-regular" required>
+                    </div>
+                    <div class="form-group" style="margin-top:16px;">
+                        <label class="poppins-medium" for="usuarioEmail">E-mail *</label>
+                        <input type="email" id="usuarioEmail" class="form-input poppins-regular" required>
+                    </div>
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+                        <div class="form-group">
+                            <label class="poppins-medium" for="usuarioCargo">Cargo</label>
+                            <select id="usuarioCargo" class="form-select poppins-medium">
+                                <option value="operador">Operador de Estoque</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="poppins-medium" for="usuarioStatus">Status</label>
+                            <select id="usuarioStatus" class="form-select poppins-medium">
+                                <option value="ativo">Ativo</option>
+                                <option value="inativo">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top:24px; display:flex; gap:12px; justify-content:flex-end;">
+                        <button type="button" style="padding:12px 24px; background:#EFEAF4; color:var(--purple-primary); border:none; border-radius:8px; cursor:pointer;" onclick="fecharModalUsuario()">Cancelar</button>
+                        <button type="submit" style="padding:12px 24px; background:var(--purple-primary); color:#FFF; border:none; border-radius:8px; cursor:pointer;">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL CONFIRMAR EXCLUSÃO USUÁRIO -->
+        <div class="modal-overlay" id="modalExclusaoUsuario" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
+            <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
+                <span style="font-size:48px; color:var(--danger); display:block; margin-bottom:16px;">⚠️</span>
+                <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark); margin-bottom:12px;">Confirmar Exclusão</h3>
+                <p class="poppins-regular" style="color:var(--text-main); font-size:14px; margin-bottom:24px;">Tem certeza que deseja excluir esta conta de usuário? Esta ação não poderá ser desfeita.</p>
+                <div style="display:flex; gap:12px; justify-content:center;">
+                    <button type="button" class="poppins-semibold" id="btnCancelarExclusaoUsuario" style="padding:12px 24px; background:#EFEAF4; color:var(--purple-primary); border:none; border-radius:8px; cursor:pointer;">Cancelar</button>
+                    <button type="button" class="poppins-semibold" id="btnConfirmarExclusaoUsuario" style="padding:12px 24px; background:var(--danger); color:#FFF; border:none; border-radius:8px; cursor:pointer;">Excluir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CONFIRMAR LIMPAR HISTÓRICO -->
+        <div class="modal-overlay" id="modalLimparHistorico" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
+            <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
+                <span style="font-size:48px; color:var(--danger); display:block; margin-bottom:16px;">🗑️</span>
+                <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark); margin-bottom:12px;">Limpar Todo o Histórico</h3>
+                <p class="poppins-regular" style="color:var(--text-main); font-size:14px; margin-bottom:24px;">Tem certeza que deseja apagar de forma definitiva todo o histórico de atividades do sistema? Esta ação é irreversível.</p>
+                <div style="display:flex; gap:12px; justify-content:center;">
+                    <button type="button" class="poppins-semibold" id="btnCancelarLimparHistorico" style="padding:12px 24px; background:#EFEAF4; color:var(--purple-primary); border:none; border-radius:8px; cursor:pointer;">Cancelar</button>
+                    <button type="button" class="poppins-semibold" id="btnConfirmarLimparHistorico" style="padding:12px 24px; background:var(--danger); color:#FFF; border:none; border-radius:8px; cursor:pointer;">Limpar Tudo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RODAPÉ -->
+        <footer class="main-footer">
+            <div class="footer-left">
+                <h4 class="poppins-bold text-purple-primary">Mercado Solidário</h4>
+                <p class="poppins-regular">© 2026 Mercado Solidário - Todos os direitos reservados em conformidade com a LGPD.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="js/base.js" type="module"></script>
+    <script src="js/admin.js" type="module"></script>
+</body>
+</html>

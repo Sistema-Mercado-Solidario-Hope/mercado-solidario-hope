@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Solidário – Frente de Caixa</title>
+    <!-- Fontes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/frenteCaixa.css">
+</head>
+<body>
+
+    <!-- OVERLAY MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <button type="button" class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="sidebar-header">
+            <h1 class="poppins-bold brand-title">Mercado<br>Solidário</h1>
+            <p class="poppins-regular brand-subtitle">Painel Administrativo</p>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Navegação principal">
+            <ul>
+                <li>
+                    <a href="admin.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="9"></rect>
+                            <rect x="14" y="3" width="7" height="5"></rect>
+                            <rect x="14" y="12" width="7" height="9"></rect>
+                            <rect x="3" y="16" width="7" height="5"></rect>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="visaoGeralEstoque.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                        <span>Estoque</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="familia-listagem.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                        <span>Cadastros</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="frenteCaixa.html" class="poppins-medium" aria-current="page">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"/>
+                            <line x1="12" y1="10" x2="12" y2="10"/>
+                            <line x1="2" y1="10" x2="22" y2="10"/>
+                        </svg>
+                        <span>Frente de Caixa</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="cadastro-familia.html" class="btn-new-register poppins-semibold" style="text-align: center; display: block; text-decoration: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Novo Cadastro</span>
+            </a>
+            <hr class="sidebar-divider">
+            <ul>
+                <li>
+                    <a href="configuracoes.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Configurações</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html" class="poppins-medium text-exit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Sair</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- TOPBAR -->
+    <header class="topbar" id="topbar">
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="topbar-left">
+            <h2 class="poppins-bold topbar-title">Frente de Caixa</h2>
+        </div>
+
+        <div class="topbar-right">
+            <!-- Notificações -->
+            <div class="notification-wrapper">
+                <button type="button" class="icon-notification-btn" id="notificationBtn" aria-label="Notificações" aria-haspopup="true" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-dot" aria-label="Notificações não lidas"></span>
+                </button>
+
+                <div class="notification-dropdown" id="notificationDropdown" aria-label="Lista de notificações" role="menu">
+                    <div class="notification-dropdown-header poppins-semibold">
+                        <span>Notificações</span>
+                        <button type="button" class="mark-all-read poppins-medium" id="markAllReadBtn">Marcar todas como lidas</button>
+                    </div>
+                    <div class="notification-list" id="notificationList"></div>
+                </div>
+            </div>
+
+            <!-- Perfil -->
+            <div class="profile-avatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Foto de perfil">
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content" id="mainContent">
+        <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+        <!-- SPLIT LAYOUT -->
+        <div class="content-wrapper">
+            <!-- ESQUERDA: LISTAGEM E FILTROS -->
+            <div class="content-primary">
+                <!-- Busca -->
+                <div class="busca-wrap">
+                    <div class="busca-label">Identificação da Família (NIS/CPF/Nome)</div>
+                    <span class="busca-icon">🔍</span>
+                    <input type="text" id="busca-beneficiario" class="busca-input poppins-medium" placeholder="Digite o CPF, NIS ou Nome da família (F1 para focar)...">
+                    <span class="busca-kbd">F1</span>
+                </div>
+
+                <!-- Filtros de Categorias -->
+                <div class="filtros-header" style="margin-top: 24px;">
+                    <div class="tabs-filtro" id="filtros-categoria">
+                        <button class="tab-btn ativo" data-categoria="">Todos</button>
+                        <button class="tab-btn" data-categoria="Cesta Básica">Cesta Básica</button>
+                        <button class="tab-btn" data-categoria="Higiene">Higiene</button>
+                        <button class="tab-btn" data-categoria="Limpeza">Limpeza</button>
+                        <button class="tab-btn" data-categoria="Proteínas">Proteínas</button>
+                    </div>
+                </div>
+
+                <!-- Grid de Produtos -->
+                <div class="grade-produtos" id="grade-produtos" style="margin-top: 20px;">
+                    <!-- Carregado via JS -->
+                </div>
+            </div>
+
+            <!-- DIREITA: CARRINHO E DADOS DO BENEFICIÁRIO -->
+            <div class="painel-resumo">
+                <div class="painel-top">
+                    <h3 class="poppins-bold" style="color:var(--text-dark); margin-bottom: 16px;">Atendimento</h3>
+                    <!-- Beneficiário Card -->
+                    <div class="ben-card">
+                        <div class="ben-row">
+                            <span style="font-size: 24px;">👤</span>
+                            <div>
+                                <div class="ben-name" id="ben-name">Selecione uma família</div>
+                                <span class="badge-status" id="ben-status">Elegível</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Estatísticas da Família -->
+                    <div class="ben-stats">
+                        <div class="ben-stat">
+                            <div class="poppins-regular" style="font-size:12px; color:var(--text-muted);">Membros</div>
+                            <strong id="ben-members" style="font-size:16px; color:var(--text-dark);">—</strong>
+                        </div>
+                        <div class="ben-stat">
+                            <div class="poppins-regular" style="font-size:12px; color:var(--text-muted);">Última entrega</div>
+                            <strong id="ben-last-delivery" style="font-size:16px; color:var(--text-dark);">—</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de itens do Carrinho -->
+                <div class="painel-scroll">
+                    <div class="resumo-header">
+                        <span class="poppins-bold" style="font-size:14px; color:var(--text-dark);">Itens Selecionados</span>
+                        <span class="count-badge" id="carrinho-lista-itens-count">0</span>
+                    </div>
+                    <div class="carrinho-lista" id="carrinho-lista-itens">
+                        <!-- Itens do carrinho via JS -->
+                    </div>
+                </div>
+
+                <!-- Fechamento / Cota -->
+                <div class="painel-bottom">
+                    <div class="cota-section">
+                        <div class="cota-row">
+                            <span class="poppins-medium" style="font-size:13px; color:var(--text-muted);">Uso da Cota Familiar</span>
+                            <span class="poppins-bold" id="cota-percent-label" style="font-size:13px; color:var(--purple-primary);">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cota-progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-finalizar poppins-bold" id="btn-finalizar-entrega" style="margin-top:16px; width:100%;">
+                        Confirmar Entrega
+                    </button>
+                    <div class="kbd-hint">Pressione Ctrl + Enter para finalizar</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYOUT MOBILE ADICIONAL -->
+        <div class="mob-busca-wrap">
+            <input type="text" class="mob-busca poppins-medium" placeholder="Buscar produto ou código...">
+        </div>
+        <div class="mob-tabs" id="mob-tabs">
+            <button class="mob-tab ativo" data-cat="">Todos</button>
+            <button class="mob-tab" data-cat="Cesta Básica">Cesta Básica</button>
+            <button class="mob-tab" data-cat="Higiene">Higiene</button>
+            <button class="mob-tab" data-cat="Limpeza">Limpeza</button>
+            <button class="mob-tab" data-cat="Proteínas">Proteínas</button>
+        </div>
+        <div class="mob-lista" id="mob-lista-produtos">
+            <!-- Produtos mobile via JS -->
+        </div>
+        <div class="mob-footer-bar">
+            <div class="count-label poppins-medium">
+                Itens selecionados: <strong id="mob-count">0</strong>
+            </div>
+            <button type="button" class="ver-lista poppins-bold" id="mob-ver-lista">Ver Lista</button>
+            <button type="button" class="mob-confirmar poppins-bold" id="mob-btn-confirmar">Finalizar</button>
+        </div>
+
+        <!-- MOBILE BOTTOM SHEET -->
+        <div class="bs-overlay" id="bs-overlay"></div>
+        <div class="bottom-sheet" id="bottom-sheet">
+            <div class="bs-header">
+                <h3 class="poppins-bold">Resumo da Entrega</h3>
+            </div>
+            <div class="bs-lista" id="bs-lista">
+                <!-- Itens da lista no sheet -->
+            </div>
+            <button type="button" class="bs-confirmar-btn poppins-bold" id="bs-confirmar-btn">Confirmar Entrega</button>
+        </div>
+    </main>
+
+    <script src="js/base.js" type="module"></script>
+    <script src="js/frenteCaixa.js" type="module"></script>
+</body>
+</html>

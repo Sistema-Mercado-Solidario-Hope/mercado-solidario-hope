@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Solidário – Gestão de Intenções</title>
+
+    <!-- Fontes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/validar-intencoes.css">
+</head>
+<body>
+
+    <!-- ==================== OVERLAY MOBILE ==================== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="sidebar-header">
+            <h1 class="poppins-bold brand-title">Mercado<br>Solidário</h1>
+            <p class="poppins-regular brand-subtitle">Painel Administrativo</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="#" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="9"></rect>
+                            <rect x="14" y="3" width="7" height="5"></rect>
+                            <rect x="14" y="12" width="7" height="9"></rect>
+                            <rect x="3" y="16" width="7" height="5"></rect>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="/visaoGeralEstoque.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                        Estoque
+                    </a>
+                </li>
+                <li>
+                    <a href="/cadastro-familia.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                        Cadastros
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-new-register poppins-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Novo Cadastro
+            </button>
+            <hr class="sidebar-divider">
+            <ul>
+                <li class="">
+                    <a href="/configuracoes.html" class="poppins-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        Configurações
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="poppins-medium text-exit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Sair
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- ==================== TOPBAR ==================== -->
+    <header class="topbar" id="topbar">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu">
+            <!-- ícone menu -->
+        </button>
+        <div class="topbar-left">
+            <h2 class="poppins-bold topbar-title">Gestão de Estoque</h2>
+
+            <!-- DROPDOWN NO LUGAR DAS TABS -->
+            <div class="dropdown-tabs" id="dropdownTabs">
+                <button class="dropdown-toggle poppins-semibold" id="dropdownToggle">
+                    <span id="dropdownLabel">Recebimento</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <ul class="dropdown-menu" id="dropdownMenu">
+                    <li><a href="/visaoGeralEstoque.html" class="poppins-medium dropdown-item " data-value="visao-geral">Visão Geral</a></li>
+                    <li><a href="/inserirEstoque.html" class="poppins-medium dropdown-item" data-value="relatorios">Relatórios</a></li>
+                    <li><a href="/gestãoDeEstoqueHome.html" class="poppins-semibold dropdown-item active" data-value="recebimento">Recebimento</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <!-- NOTIFICAÇÕES -->
+            <div class="notification-wrapper">
+                <button class="icon-notification-btn" id="notificationBtn" aria-label="Notificações" aria-haspopup="true" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-dot" aria-label="Notificações não lidas"></span>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="notification-dropdown" id="notificationDropdown" aria-label="Lista de notificações" role="menu">
+                    <div class="notification-dropdown-header poppins-semibold">
+                        Notificações
+                        <button class="mark-all-read poppins-medium" id="markAllReadBtn">Marcar todas como lidas</button>
+                    </div>
+                    <div class="notification-list" id="notificationList">
+                        <!-- Itens preenchidos via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-avatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Foto de perfil">
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content" id="mainContent">
+
+        <!-- TOAST CONTAINER (global) -->
+        <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+        <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
+        <section class="validar-container">
+            <div class="validar-header">
+                <div class="validar-titles">
+                    <h2 class="poppins-bold" style="color: var(--purple-dark);">Validação de Intenções</h2>
+                    <p class="poppins-regular" style="color: var(--text-main);">Confira os itens recebidos e confirme a entrega.</p>
+                </div>
+                <div class="validar-search">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchIntencao" class="poppins-regular" placeholder="Buscar por código, nome ou telefone...">
+                </div>
+            </div>
+
+            <div id="listaIntencoes" class="intencoes-grid">
+                <!-- Preenchido via JS -->
+            </div>
+
+            <div id="mensagemVazia" class="poppins-regular text-muted" style="text-align: center; padding: 40px; display: none;">
+                Nenhuma intenção encontrada.
+            </div>
+        </section>
+
+        <!-- ==================== MODAL DE EDIÇÃO (ATUALIZADO) ==================== -->
+        <div class="modal-edicao-overlay" id="modalEdicaoOverlay" aria-hidden="true">
+            <div class="modal-edicao-card">
+                <button class="modal-edicao-close" id="closeModalEdicao" aria-label="Fechar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+
+                <div class="modal-edicao-header">
+                    <h3 class="poppins-bold" style="color: var(--purple-dark);">Editar Intenção</h3>
+                    <p id="modalCodigo" class="poppins-medium" style="color: var(--text-muted);"></p>
+                </div>
+
+                <div class="modal-edicao-body">
+                    <div class="doador-info-readonly">
+                        <p class="poppins-regular"><strong>Doador:</strong> <span id="modalNome"></span></p>
+                        <p class="poppins-regular"><strong>Telefone:</strong> <span id="modalTelefone"></span></p>
+                    </div>
+
+                    <h4 class="poppins-semibold" style="margin: 20px 0 8px; color: var(--text-dark);">Itens doados</h4>
+                    <div id="modalItensContainer" class="modal-itens-lista">
+                        <!-- Itens editáveis inseridos aqui -->
+                    </div>
+
+                    <!-- Seção de adição de itens -->
+                    <div class="modal-add-section">
+                        <button type="button" id="btnToggleCatalogo" class="btn-toggle-catalogo poppins-semibold">
+                            📋 Adicionar item do catálogo
+                        </button>
+                        <button type="button" id="btnAddItemPersonalizado" class="btn-add-personalizado poppins-semibold">
+                            ✏️ Adicionar item personalizado
+                        </button>
+                        
+                        <!-- Catálogo (oculto por padrão) -->
+                        <div id="catalogoItensContainer" class="catalogo-itens-container" style="display: none;">
+                            <div class="catalogo-itens-header poppins-medium">
+                                Selecione o item desejado:
+                            </div>
+                            <div id="catalogoItensLista" class="catalogo-itens-lista">
+                                <!-- Preenchido via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-edicao-footer">
+                    <button type="button" id="btnSalvarEdicao" class="btn-salvar-edicao poppins-semibold">
+                        Salvar alterações
+                    </button>
+                    <button type="button" id="btnConfirmarRecebimento" class="btn-confirmar-recebimento poppins-semibold">
+                        Confirmar recebimento
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== RODAPÉ ==================== -->
+        <footer class="main-footer">
+            <div class="footer-left">
+                <h4 class="poppins-bold text-purple-primary">Mercado Solidário</h4>
+                <p class="poppins-regular">© 2026 Mercado Solidário - Todos os direitos reservados em conformidade com a LGPD.</p>
+            </div>
+        </footer>
+
+        <!-- BOTÃO VOLTAR AO TOPO -->
+        <button class="fab-button" id="scrollToTopBtn" aria-label="Voltar ao topo">
+            <img src="/img/top.png" alt="Ícone de voltar ao topo" class="arrow-top">
+        </button>
+
+    </main>
+
+    <!-- ==================== BARRA DE NAVEGAÇÃO MOBILE (BOTTOM) ==================== -->
+    <nav class="mobile-bottom-nav" id="mobileNav">
+        <a href="#" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="/visaoGeralEstoque.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span class="nav-label">Estoque</span>
+        </a>
+        <a href="/cadastro-familia.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span class="nav-label">Cadastros</span>
+        </a>
+        <a href="/cadastro-familia.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span class="nav-label">Novo<br>Cadastro</span>
+        </a>
+    </nav>
+
+    <script src="js/base.js" type="module"></script>
+    <script src="js/validar-intencoes.js" type="module"></script>
+</body>
+</html>

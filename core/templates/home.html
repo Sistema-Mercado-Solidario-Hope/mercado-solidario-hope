@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/home-style.css">
+    <title>Mercado Solidário</title>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="home.html" class="logo-link">
+                <h2 class="poppins-bold topbar-title">Mercado Solidário</h2>
+            </a>
+            <nav class="topbar-tabs">
+                <a href="home.html" class="poppins-medium tab-item active">Home</a>
+                <a href="vitrineNecessidade.html" class="poppins-regular tab-item">Necessidades</a>
+                <a href="contato.html" class="poppins-regular tab-item">Contato</a>
+            </nav>
+        </div>
+        <div class="topbar-right">
+            <button class="btn-confirm-donation poppins-semibold">Doar Agora</button>
+        </div>
+    </header>
+
+    <!-- BARRA DE NAVEGAÇÃO MOBILE (BOTTOM) -->
+    <nav class="mobile-bottom-nav" id="mobileNav">
+        <a href="home.html" class="mobile-nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="nav-label">Home</span>
+        </a>
+        <a href="vitrineNecessidade.html" class="mobile-nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span class="nav-label">Necessidades</span>
+        </a>
+        <a href="contato.html" class="mobile-nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            <span class="nav-label">Contato</span>
+        </a>
+        <button class="mobile-nav-item mobile-doar-btn" id="mobileDoarBtn">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span class="nav-label">Doar Agora</span>
+        </button>
+    </nav>
+
+    <main class="vitrine-container">
+
+        <!-- SEÇÃO INSTITUCIONAL - INSTITUTO HOPE -->
+        <section class="institute-banner">
+            <div class="institute-content">
+                <div class="institute-badge poppins-semibold">Uma iniciativa do Instituto Hope</div>
+                <h2 class="poppins-bold">O amor que transforma<br>vidas, <span class="text-purple-primary">todos os dias.</span></h2>
+                <p class="poppins-regular">O Mercado Solidário nasceu do sonho do Instituto Hope em encurtar a distância entre quem pode ajudar e quem precisa de alimento na mesa. Com transparência e muito amor, fazemos cada doação chegar aonde realmente importa.</p>
+                <div class="institute-stats">
+                    <div class="stat-item">
+                        <span class="poppins-black">+15</span>
+                        <span class="poppins-medium">Anos de atuação</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="poppins-black">+30</span>
+                        <span class="poppins-medium">Cidades alcançadas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="institute-image">
+                <img src="/img/camisaHopeCostas2.jpeg" alt="Voluntários do Instituto Hope">
+                <div class="institute-image-caption poppins-semibold">Instituto Hope — desde 2011</div>
+            </div>
+        </section>
+        
+        <!-- SEÇÃO HERÓI -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="poppins-bold">Sua generosidade, <span class="text-purple-primary">transparente e ágil.</span></h1>
+                <p class="poppins-regular">Cada centavo doado através do Mercado Solidário é transformado em alimento e dignidade. Doe via PIX para garantir uma resposta imediata às necessidades de hoje.</p>
+                <div class="hero-badges">
+                    <div class="badge-item poppins-semibold">
+                        <svg class="img-hero" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Doação 100% Segura
+                    </div>
+                    <div class="badge-item poppins-semibold">
+                        <svg class="img-hero" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Rastreamento em Tempo Real
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="/img/mercado.jpeg" alt="Entrega de alimentos">
+            </div>
+        </section>
+
+        <!-- SEÇÃO FAQ -->
+        <section class="faq-container">
+            <h2 class="section-title poppins-bold">Perguntas Frequentes</h2>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <h4 class="poppins-semibold">Como o dinheiro é utilizado?</h4>
+                    <p class="poppins-regular">70% do valor é destinado à compra direta de alimentos de produtores locais, 20% para logística de distribuição e 10% para manutenção da plataforma digital.</p>
+                </div>
+                <div class="faq-card">
+                    <h4 class="poppins-semibold">Receberei um comprovante?</h4>
+                    <p class="poppins-regular">Sim! Ao realizar a doação via PIX, você pode baixar o comprovante do seu banco. Se desejar um recibo de doação oficial para fins fiscais, entre em contato conosco.</p>
+                </div>
+                <div class="faq-card">
+                    <h4 class="poppins-semibold">Posso doar outros valores?</h4>
+                    <p class="poppins-regular">O PIX permite doações de qualquer valor, desde R$ 1,00 até o limite disponível em sua conta bancária. Cada pequena contribuição ajuda a encher um prato.</p>
+                </div>
+                <div class="faq-card">
+                    <h4 class="poppins-semibold">A doação é recorrente?</h4>
+                    <p class="poppins-regular">A doação via PIX nesta página é pontual. Para tornar-se um doador mensal, acesse a área "Meu Perfil" e configure sua assinatura solidária via cartão ou débito.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO MÉTRICAS -->
+        <section class="metrics-banner">
+            <div class="metric">
+                <!-- DADOS DO BACKEND: MÉTRICA 1 - NÚMERO -->
+                <h2 class="poppins-black">12k+</h2>
+                <!-- DADOS DO BACKEND: MÉTRICA 1 - DESCRIÇÃO -->
+                <p class="poppins-medium">Famílias atendidas</p>
+            </div>
+            <div class="metric">
+                <!-- DADOS DO BACKEND: MÉTRICA 2 - NÚMERO -->
+                <h2 class="poppins-black">R$ 2.4M</h2>
+                <!-- DADOS DO BACKEND: MÉTRICA 2 - DESCRIÇÃO -->
+                <p class="poppins-medium">Arrecadados em 2023</p>
+            </div>
+            <div class="metric">
+                <!-- DADOS DO BACKEND: MÉTRICA 3 - NÚMERO -->
+                <h2 class="poppins-black">100%</h2>
+                <!-- DADOS DO BACKEND: MÉTRICA 3 - DESCRIÇÃO -->
+                <p class="poppins-medium">Transparência auditada</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="main-footer">
+        <div class="footer-left">
+            <h4 class="poppins-bold text-purple-primary">Mercado Solidário</h4>
+            <p class="poppins-regular">© 2026 Mercado Solidário - Todos os direitos reservados em conformidade com a LGPD.</p>
+            <a href="login.html" class="admin-login-link poppins-bold">Acesso Interno</a>
+        </div>
+    </footer>
+
+    <!-- BOTÃO VOLTAR AO TOPO -->
+    <button class="fab-button" id="scrollToTopBtn" aria-label="Voltar ao topo">
+        <img src="/img/top.png" alt="Ícone de voltar ao topo" class="arrow-top">
+    </button>
+
+    <!-- ==================== MODAL PIX (ATUALIZADO) ==================== -->
+    <div class="modal-overlay" id="pixModal">
+        <div class="modal-container">
+            <button class="modal-close" id="closeModal" aria-label="Fechar modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+
+            <div class="modal-header">
+                <div class="modal-icon-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                </div>
+                <h2 class="poppins-bold">Doar Agora</h2>
+            </div>
+
+            <!-- BOTÃO PARA DOAÇÃO DE ITENS ESPECÍFICOS -->
+            <div class="modal-donate-items">
+                <div class="divider-modal"></div>
+                <p class="poppins-regular donate-items-text">
+                    Prefere doar itens específicos? Monte sua cesta personalizada.
+                </p>
+                <a href="intencao-doacao.html" class="btn-donate-items poppins-semibold">
+                    <svg class="btn-donate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    Quero Doar Itens
+                </a>
+                <p class="poppins-regular"><br>Ou escaneie o QR Code ou copie a chave PIX para fazer sua doação instantânea.</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-qr-section">
+                    <div class="qr-wrapper">
+                        <span class="qr-watermark poppins-bold">PIX</span>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=financeiro@mercadosolidario.org.br&color=6900B8&bgcolor=FFFFFF" alt="QR Code PIX para doação">
+                    </div>
+                    <div class="qr-badge poppins-semibold">
+                        <svg class="qr-badge-icon" viewBox="0 0 24 24" fill="none" stroke="var(--purple-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        Pagamento Instantâneo
+                    </div>
+                </div>
+
+                <div class="modal-info-section">
+                    <h3 class="poppins-semibold">
+                        <svg class="info-section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        Dados da Chave PIX
+                    </h3>
+
+                    <div class="copy-box">
+                        <div class="copy-label-row">
+                            <span class="poppins-semibold copy-label">CHAVE PIX (E-MAIL)</span>
+                        </div>
+                        <div class="copy-value-row">
+                            <span class="poppins-bold copy-value" id="pixKeyModal">financeiro@mercadosolidario.org.br</span>
+                        </div>
+                        <button class="btn-copy-pix poppins-semibold" id="copyPixBtn">
+                            <svg class="btn-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            Copiar Chave
+                        </button>
+                        <span class="copy-feedback poppins-medium" id="copyFeedback">✓ Chave copiada!</span>
+                    </div>
+
+                    <div class="institution-info poppins-regular">
+                        <strong>Instituição:</strong> Mercado Solidário Digital Ltda.<br>
+                        <strong>CNPJPJ:</strong> 00.000.000/0001-00
+                    </div>
+
+                    <div class="security-seal poppins-medium">
+                        <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <polyline points="9 12 11 14 15 10"/>
+                        </svg>
+                        Doação 100% Segura e Rastreável
+                    </div>
+                </div>
+            </div>
+
+            <!-- PONTO DE COLETA -->
+            <div class="modal-collection-point">
+                <div class="collection-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                </div>
+                <p class="poppins-regular collection-text">
+                    Ou se preferir, vá até o ponto de coleta para levar o item e conversar com nossos correspondentes.
+                </p>
+                <p class="poppins-bold collection-address">
+                    Rua Aubé, 895 – Bairro Boa Vista – Joinville – SC
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <p class="poppins-regular">Após realizar a doação, o comprovante pode ser enviado para nosso WhatsApp para rastreamento em tempo real.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/home-script.js"></script>
+
+</body>
+</html>
