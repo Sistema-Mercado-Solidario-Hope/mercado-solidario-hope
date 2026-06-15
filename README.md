@@ -63,7 +63,7 @@ Ensure you have Python 3.12+ and a virtual environment configured.
 
 Build and run the entire application containerized:
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 *(The Docker entrypoint automatically triggers migrations, seeds the database with initial states, and exposes the server on port `8000`)*.
 

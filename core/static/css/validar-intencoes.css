@@ -1,0 +1,537 @@
+/* ==================== PÁGINA VALIDAÇÃO DE INTENÇÕES ==================== */
+
+.validar-container {
+    padding: 32px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.validar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.validar-search {
+    display: flex;
+    align-items: center;
+    background-color: #F6EAF9;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    width: 360px;
+    gap: 12px;
+}
+
+.validar-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.validar-search input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Grid de intenções */
+.intencoes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+/* Card de intenção */
+.intencao-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+    transition: box-shadow var(--transition-normal);
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+
+.intencao-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--purple-primary);
+}
+
+.intencao-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.codigo-badge {
+    background-color: var(--purple-light);
+    color: var(--purple-dark);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.status-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.status-pendente {
+    background-color: var(--warning-light);
+    color: #B45309;
+}
+
+.status-validado {
+    background-color: var(--success-light);
+    color: #065F46;
+}
+
+.intencao-card-body p {
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--text-main);
+}
+
+.intencao-card-body strong {
+    color: var(--text-dark);
+}
+
+.intencao-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.btn-editar-intencao {
+    background-color: var(--purple-primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-editar-intencao:hover {
+    background-color: var(--purple-dark);
+}
+
+/* ==================== MODAL DE EDIÇÃO ==================== */
+.modal-edicao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 19, 35, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+}
+
+.modal-edicao-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-edicao-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 48px rgba(105, 0, 184, 0.2);
+}
+
+.modal-edicao-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.modal-edicao-close:hover {
+    background: var(--purple-light);
+    color: var(--purple-dark);
+}
+
+.modal-edicao-header {
+    margin-bottom: 20px;
+}
+
+.doador-info-readonly {
+    background: #FDF9FF;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+
+.doador-info-readonly p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+/* Lista de itens no modal */
+.modal-itens-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.item-edicao-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #FDF9FF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    flex-wrap: wrap;
+}
+
+.item-edicao-row .nome-item {
+    flex: 2;
+    min-width: 140px;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.item-edicao-row input.quantidade-item {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    background: white;
+}
+
+.item-edicao-row .btn-remover-item-modal {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.item-edicao-row .btn-remover-item-modal:hover {
+    text-decoration: underline;
+}
+
+/* Linha para adicionar item extra */
+.item-extra-row-modal {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #FFF7FD;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 8px;
+}
+
+.item-extra-row-modal input {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    flex: 1;
+}
+
+.item-extra-row-modal .btn-remover-item-modal {
+    margin-left: auto;
+}
+
+.btn-add-item-modal {
+    background: none;
+    border: 2px dashed var(--purple-primary);
+    color: var(--purple-primary);
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-add-item-modal:hover {
+    background: var(--purple-light);
+}
+
+/* Footer do modal */
+.modal-edicao-footer {
+    display: flex;
+    justify-content: space-between; /* antes era flex-end */
+    gap: 12px;
+    margin-top: 24px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.btn-salvar-edicao {
+    background-color: #6E6875;
+    color: white;
+    transition: background 0.2s;
+}
+
+.btn-salvar-edicao:hover {
+    background-color: #4D4354;
+}
+
+.btn-salvar-edicao,
+.btn-confirmar-recebimento {
+    flex: 1;                /* ambos ocupam a mesma largura */
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    white-space: nowrap;    /* evita quebra de texto */
+}
+
+.btn-confirmar-recebimento {
+    background-color: var(--success);
+    color: white;
+    transition: background 0.2s;
+}
+.btn-confirmar-recebimento:hover {
+    background-color: #059669;
+}
+
+/* ==================== MODAL DE CONFIRMAÇÃO ==================== */
+.modal-confirmacao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 19, 35, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeInOverlay 0.2s ease;
+}
+.modal-confirmacao-overlay.fade-out {
+    animation: fadeOutOverlay 0.2s ease forwards;
+}
+
+.modal-confirmacao-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 16px 40px rgba(105, 0, 184, 0.15);
+    animation: scaleInCard 0.2s ease;
+}
+.modal-confirmacao-overlay.fade-out .modal-confirmacao-card {
+    animation: scaleOutCard 0.2s ease forwards;
+}
+
+.mensagem-confirmacao {
+    font-size: 15px;
+    color: #4D4354;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.botoes-confirmacao {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-sim, .btn-nao {
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+}
+
+.btn-sim {
+    background-color: #63eb75;
+    color: white;
+}
+.btn-sim:hover {
+    background-color: #3be219;
+}
+
+.btn-nao {
+    background-color: #EFEAF4;
+    color: #4D4354;
+}
+.btn-nao:hover {
+    background-color: #DCD0E6;
+}
+
+/* ==================== SEÇÃO DE ADIÇÃO DE ITENS NO MODAL ==================== */
+.modal-add-section {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-toggle-catalogo,
+.btn-add-personalizado {
+    flex: 1 1 0;
+    min-width: 180px;
+    background: white;
+    border: 2px solid var(--purple-primary);
+    color: var(--purple-primary);
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.btn-toggle-catalogo:hover,
+.btn-add-personalizado:hover {
+    background: var(--purple-light);
+    border-color: var(--purple-dark);
+    color: var(--purple-dark);
+}
+
+.catalogo-itens-container {
+    background: #FDF9FF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.catalogo-itens-header {
+    font-size: 13px;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.catalogo-itens-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.catalogo-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+}
+
+.catalogo-item-nome {
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.btn-adicionar-catalogo {
+    background: var(--purple-primary);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-adicionar-catalogo:hover {
+    background: var(--purple-dark);
+}
+
+/* Ajuste para os botões de remover (igual ao item principal) */
+.item-extra-row-modal .btn-remover-item-modal {
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 13px;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.item-extra-row-modal .btn-remover-item-modal:hover {
+    text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .validar-container {
+        padding: 20px 16px;
+    }
+    .validar-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .validar-search {
+        width: 100%;
+    }
+    .intencoes-grid {
+        grid-template-columns: 1fr;
+    }
+    .modal-edicao-card {
+        padding: 24px 20px;
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-add-section {
+        flex-direction: column;
+    }
+    .btn-toggle-catalogo,
+    .btn-add-personalizado {
+        flex: auto;
+        min-width: auto;
+    }
+}

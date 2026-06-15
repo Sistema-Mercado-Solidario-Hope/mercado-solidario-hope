@@ -130,13 +130,14 @@ class ActivityLog(models.Model):
         return f"{self.acao} por {self.id_usuario.username} em {self.data_hora}"
 
 class GlobalConfiguration(models.Model):
-    telefone_contato = models.CharField(max_length=20, default='(11) 99999-9999')
-    endereco_instituicao = models.CharField(max_length=255, default='Rua Esperança, 123')
-    pix_key = models.CharField(max_length=255, default='contato@mercadosolidario.org.br')
-    qr_code_image = models.TextField(blank=True, default='')  # base64 string or image URL
-    cnpj = models.CharField(max_length=20, default='00.000.000/0001-00')
-    email_contato = models.CharField(max_length=255, default='contato@institutohope.org.br')
-    instagram_link = models.CharField(max_length=255, default='https://instagram.com/institutohope')
+    telefone_contato = models.CharField(max_length=20, default='554732073009')
+    cep_instituicao = models.CharField(max_length=10, default='89205-000')
+    endereco_instituicao = models.CharField(max_length=255, default='Rua Aubé, 895 – Boa Vista, Joinville/SC')
+    pix_key = models.CharField(max_length=255, default='joinville@ondadura.com')
+    qr_code_image = models.TextField(blank=True)  # base64 string or image URL
+    cnpj = models.CharField(max_length=20, default='22788440000198')
+    email_contato = models.CharField(max_length=255, default='contato@ondadura.com')
+    instagram_link = models.CharField(max_length=255, default='https://www.instagram.com/ondadura/')
 
     class Meta:
         db_table = 'global_configuration'
