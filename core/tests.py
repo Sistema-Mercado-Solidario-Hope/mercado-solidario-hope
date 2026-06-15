@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from core.models import Usuario, Product, BeneficiaryFamily, OutboundDelivery, DeliveryItem, DonationIntake, DonationItem
+from core.models import Usuario, Product, Category, BeneficiaryFamily, OutboundDelivery, DeliveryItem, DonationIntake, DonationItem
 from core.views import generate_token
 import json
 
@@ -40,9 +40,10 @@ class ProductCRUDTests(TestCase):
         self.assertEqual(Product.objects.get(pk=data['id']).nome_produto, 'Arroz Especial')
 
     def test_update_product(self):
+        cat, _ = Category.objects.get_or_create(nome='Cesta Básica')
         p = Product.objects.create(
             nome_produto='Feijão Teste',
-            categoria='Cesta Básica',
+            categoria=cat,
             unidade_medida='kg',
             estoque_atual=50.00,
             estoque_minimo=10.00
@@ -60,9 +61,10 @@ class ProductCRUDTests(TestCase):
         self.assertEqual(float(p.estoque_atual), 40.00)
 
     def test_delete_product(self):
+        cat, _ = Category.objects.get_or_create(nome='Cesta Básica')
         p = Product.objects.create(
             nome_produto='Excluir Teste',
-            categoria='Cesta Básica',
+            categoria=cat,
             unidade_medida='un',
             estoque_atual=10.00
         )
@@ -134,9 +136,10 @@ class DeliveryTests(TestCase):
             lgpd_accept=True
         )
 
+        cat, _ = Category.objects.get_or_create(nome='Cesta Básica')
         self.product = Product.objects.create(
             nome_produto='Arroz (kg)',
-            categoria='Cesta Básica',
+            categoria=cat,
             unidade_medida='kg',
             estoque_atual=100.00,
             estoque_minimo=10.00

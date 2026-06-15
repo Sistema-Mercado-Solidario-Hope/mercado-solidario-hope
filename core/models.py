@@ -34,10 +34,21 @@ class BeneficiaryFamily(models.Model):
     def __str__(self):
         return self.nome_familia
 
+class Category(models.Model):
+    id_categoria = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100, unique=True)
+    descricao = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'categorias'
+
+    def __str__(self):
+        return self.nome
+
 class Product(models.Model):
     id_produto = models.AutoField(primary_key=True)
     nome_produto = models.CharField(max_length=255)
-    categoria = models.CharField(max_length=100)  # Ex: Cereais, Leguminosas, Higiene, Limpeza, Proteínas
+    categoria = models.ForeignKey(Category, on_delete=models.PROTECT, db_column='id_categoria', related_name='produtos')
     unidade_medida = models.CharField(max_length=10)  # Ex: kg, un, L
     estoque_atual = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     estoque_minimo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

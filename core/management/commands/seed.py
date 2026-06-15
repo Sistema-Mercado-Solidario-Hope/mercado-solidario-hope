@@ -1,7 +1,5 @@
 from django.core.management.base import BaseCommand
-from core.models import Usuario, Product, BeneficiaryFamily, GlobalConfiguration
-from django.utils import timezone
-from datetime import timedelta
+from core.models import Usuario, Product, GlobalConfiguration, Category
 
 class Command(BaseCommand):
     help = 'Seeds initial database state for Mercado Solidário (HOPE)'
@@ -185,10 +183,13 @@ class Command(BaseCommand):
         ]
 
         for p_data in products_data:
+            cat_name = p_data.pop('categoria')
+            cat_obj, _ = Category.objects.get_or_create(nome=cat_name)
+            p_data['categoria'] = cat_obj
             Product.objects.get_or_create(
                 nome_produto=p_data['nome_produto'],
                 defaults=p_data
             )
         self.stdout.write('Products seeded.')
-        
+
         self.stdout.write(self.style.SUCCESS('Database seeded successfully!'))

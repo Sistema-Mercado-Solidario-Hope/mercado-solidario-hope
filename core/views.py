@@ -11,7 +11,7 @@ from datetime import datetime
 from functools import wraps
 
 from core.models import (
-    Usuario, BeneficiaryFamily, Product, DonationIntake, 
+    Usuario, BeneficiaryFamily, Category, Product, DonationIntake, 
     DonationItem, OutboundDelivery, DeliveryItem, ActivityLog, GlobalConfiguration
 )
 
@@ -263,10 +263,10 @@ def api_usuario_perfil(request):
 def api_produtos(request):
     if request.method == 'GET':
         categoria = request.GET.get('categoria')
-        query = Product.objects.all()
+        query = Product.objects.select_related('categoria').all()
         if categoria:
             # Normalizar categoria para busca
-            query = query.filter(categoria__iexact=categoria.replace('_', ' '))
+            query = query.filter(categoria__nome__iexact=categoria.replace('_', ' '))
             
         produtos_list = []
         for p in query:
@@ -274,8 +274,8 @@ def api_produtos(request):
                 'id': p.id_produto,
                 'nome': p.nome_produto,
                 'name': p.nome_produto,
-                'categoria': p.categoria,
-                'category': p.categoria,
+                'categoria': p.categoria.nome,
+                'category': p.categoria.nome,
                 'unidade': p.unidade_medida,
                 'unidade_medida': p.unidade_medida,
                 'quantidade': float(p.estoque_atual),
@@ -313,9 +313,10 @@ def api_produtos(request):
             if not nome_produto or not categoria or not unidade_medida:
                 return JsonResponse({'erro': 'Campos obrigatórios ausentes'}, status=400)
                 
+            category_obj, _ = Category.objects.get_or_create(nome=categoria.strip())
             p = Product.objects.create(
                 nome_produto=nome_produto.strip(),
-                categoria=categoria.strip(),
+                categoria=category_obj,
                 unidade_medida=unidade_medida.strip(),
                 estoque_atual=float(estoque_atual),
                 estoque_minimo=float(estoque_minimo),
@@ -368,7 +369,8 @@ def api_produto_detail(request, pk):
             if nome:
                 p.nome_produto = nome.strip()
             if categoria:
-                p.categoria = categoria.strip()
+                category_obj, _ = Category.objects.get_or_create(nome=categoria.strip())
+                p.categoria = category_obj
             if unidade:
                 p.unidade_medida = unidade.strip()
             if estoque_minimo is not None:

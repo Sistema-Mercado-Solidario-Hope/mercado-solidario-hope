@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from core.models import (
-    Usuario, BeneficiaryFamily, Product, DonationIntake, 
+    Usuario, BeneficiaryFamily, Category, Product, DonationIntake, 
     DonationItem, OutboundDelivery, DeliveryItem, ActivityLog, GlobalConfiguration
 )
 
@@ -27,12 +27,19 @@ class BeneficiaryFamilyAdmin(admin.ModelAdmin):
     search_fields = ('nome_familia', 'responsavel_nome', 'cpf_nis', 'telefone')
     ordering = ('nome_familia',)
 
+# Categories
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao')
+    search_fields = ('nome',)
+    ordering = ('nome',)
+
 # Products
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('nome_produto', 'categoria', 'unidade_medida', 'estoque_atual', 'estoque_minimo', 'estoque_maximo')
-    list_filter = ('categoria', 'unidade_medida')
-    search_fields = ('nome_produto', 'categoria')
+    list_filter = ('categoria__nome', 'unidade_medida')
+    search_fields = ('nome_produto', 'categoria__nome')
     ordering = ('nome_produto',)
 
 # Donation Items Inline
