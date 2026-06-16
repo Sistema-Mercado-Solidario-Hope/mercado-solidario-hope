@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res && (res.status === 201 || !res.erro)) {
                 showToast('Produto cadastrado com sucesso!', 'success');
                 setTimeout(() => {
-                    window.location.href = 'gestãoDeEstoqueHome.html';
+                    window.location.href = 'gestao-estoque.html';
                 }, 1500);
             } else {
                 showToast(res.erro || res.data?.erro || 'Erro ao cadastrar produto.', 'error');

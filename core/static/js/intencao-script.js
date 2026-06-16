@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fecharModal = () => {
             overlay.classList.add('fade-out');
             setTimeout(() => {
-                window.location.href = 'vitrineNecessidade.html';
+                window.location.href = 'vitrine-necessidade.html';
             }, 300);
         };
 

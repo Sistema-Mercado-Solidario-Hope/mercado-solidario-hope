@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
+
 from core.models import Usuario
+
 
 class Command(BaseCommand):
     help = 'Seeds initial database state for Mercado Solidário (HOPE)'

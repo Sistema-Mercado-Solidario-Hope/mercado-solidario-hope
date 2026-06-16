@@ -64,6 +64,10 @@ python manage.py migrate
 # Seed database (Idempotent seed command utilizing get_or_create)
 python manage.py seed
 
-# Run Django unit tests
+# Run Django unit tests (classic)
 python manage.py test core
+
+# Run the complete test suite (pytest, ruff, pip-audit) in a clean Docker container (recommended)
+# This script automatically removes the test container and image on completion.
+./run_tests_docker.sh
 ```

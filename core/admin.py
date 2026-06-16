@@ -1,9 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from core.models import (
-    Usuario, BeneficiaryFamily, Category, Product, DonationIntake, 
-    DonationItem, OutboundDelivery, DeliveryItem, ActivityLog, GlobalConfiguration
+    ActivityLog,
+    BeneficiaryFamily,
+    Category,
+    DeliveryItem,
+    DonationIntake,
+    DonationItem,
+    GlobalConfiguration,
+    OutboundDelivery,
+    Product,
+    Usuario,
 )
+
 
 # Custom User Admin
 @admin.register(Usuario)
@@ -82,7 +92,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
 @admin.register(GlobalConfiguration)
 class GlobalConfigurationAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'telefone_contato', 'pix_key', 'cnpj', 'email_contato', 'instagram_link')
-    
+
     def has_add_permission(self, request):
         # Prevent creating multiple configurations (only one row is allowed)
         return not GlobalConfiguration.objects.exists()

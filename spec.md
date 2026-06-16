@@ -183,7 +183,7 @@ CREATE TABLE familias (
 
 -- ========================================================
 -- 3. TABELA DE PRODUTOS (Catálogo e Estoque)
--- Origem: cadastrodeproduto.html, visaoGeralEstoque.html
+-- Origem: cadastrodeproduto.html, visao-geral-estoque.html
 -- ========================================================
 CREATE TABLE produtos (
     id_produto INT PRIMARY KEY AUTO_INCREMENT,
@@ -226,7 +226,7 @@ CREATE TABLE doacoes_itens (
 
 -- ========================================================
 -- 5. TABELA DE ENTREGAS (Saídas de Estoque / Frente de Caixa)
--- Origem: frenteCaixa.html, sucesso.html
+-- Origem: frente-caixa.html, sucesso.html
 -- ========================================================
 CREATE TABLE entregas_saidas (
     id_entrega INT PRIMARY KEY AUTO_INCREMENT,

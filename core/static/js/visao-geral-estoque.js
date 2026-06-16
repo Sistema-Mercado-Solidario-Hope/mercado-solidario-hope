@@ -186,5 +186,5 @@
         });
     }
 
-    window.visaoGeralEstoqueHelpers = { updateNotificationDot };
+    window.visao-geral-estoqueHelpers = { updateNotificationDot };
 })();

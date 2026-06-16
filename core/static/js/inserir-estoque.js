@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await Api.post('/api/intencao-doacao', payload);
             if (res && (res.status === 201 || !res.erro)) {
                 showToast(`Entrada de doação registrada com sucesso!`, 'success');
-                setTimeout(() => window.location.href = 'gestãoDeEstoqueHome.html', 1500);
+                setTimeout(() => window.location.href = 'gestao-estoque.html', 1500);
             } else {
                 showToast(res.erro || res.data?.erro || 'Erro ao registrar doação.', 'error');
             }
