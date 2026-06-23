@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import RedirectView
 
 from core import views
 
@@ -22,13 +23,15 @@ urlpatterns = [
     path('cadastro-produto.html', views.cadastro_produto_view),
     path('configuracoes.html', views.configuracoes_view),
     path('admin.html', views.admin_view),
-    path('cadastro.html', views.cadastro_view),
+    path('metas-produtos.html', views.metas_produtos_view),
+    path('cadastro.html', RedirectView.as_view(url='/login.html', permanent=False)),
     path('base.html', views.base_view),
 
     # REST API views
     path('api/auth/login', views.api_login),
-    path('api/auth/cadastro', views.api_cadastro),
     path('api/auth/usuario', views.api_usuario_perfil),
+    path('api/estoque/dashboard', views.api_dashboard_stats),
+    path('api/notificacoes', views.api_notificacoes),
 
     path('api/estoque/produtos', views.api_produtos),
     path('api/estoque/produtos/<int:pk>', views.api_produto_detail),

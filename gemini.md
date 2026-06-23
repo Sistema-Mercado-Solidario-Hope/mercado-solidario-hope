@@ -1,73 +1,80 @@
-# Gemini Context & Architect Details
+# Sistema Mercado Solidário (HOPE) - Developer Guide
 
-This document provides context and design blueprints of the **Mercado Solidário (HOPE)** project for future AI coding assistants (Gemini) working on this repository.
+This document describes the current architecture, conventions, and API endpoints of the Mercado Solidário (HOPE) project to assist developer agents.
 
 ---
 
-## 🏗️ Architectural Overview
+## 🏛️ Architecture Overview
 
-The application is structured as a **Django Monolith**. 
+The project is built as a **Django Monolith** with a decoupled frontend:
+- **Backend**: Django 6.0.6 serving HTML templates and exposing a custom-authenticated REST API.
+- **Database**: SQLite3 containing schemas for Products, Beneficiaries, Donations, Deliveries, and Logs.
+- **Authentication**: Token-based authentication using cryptographic signatures (`django.core.signing.Signer`). The token is sent in the `Authorization: Bearer <token>` header.
+- **Frontend**: Standard HTML5 templates under `core/templates/` powered by plain vanilla CSS and modern ES Module scripts in `core/static/js/`.
 
-### 1. Root Static Asset Serving Strategy
-* **Context**: Legacy frontend pages imported static assets using relative links like `<script src="js/api.js">` or `<link rel="stylesheet" href="css/base.css">`.
-* **Decision**: Rather than refactoring hundreds of asset paths inside the HTML pages, we configured a regex-based serving mechanism at the project root `urls.py`:
-  ```python
-  re_path(r'^css/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'core/static/css'}),
-  re_path(r'^js/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'core/static/js'}),
-  re_path(r'^img/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'core/static/img'}),
+---
+
+## 🔌 API Endpoints & Core Routings
+
+### 1. Authentication & Users
+- **Login**: `POST /api/auth/login` - Authenticates user and returns custom cryptographic token.
+- **Perfil**: `GET /api/auth/usuario` - Retrieves currently authenticated user info.
+- **Cadastro**: Public user registration (`/api/auth/cadastro` and `cadastro.html`) has been **removed** and redirects to `/login.html`.
+- **Gerenciamento Interno**: All user creation is handled internally by administrators via the `GET/POST /api/usuarios` and `PATCH/DELETE /api/usuarios/<id>` endpoints.
+
+### 2. Estoque & Dashboard
+- **Produtos**: `GET/POST /api/estoque/produtos` & `PATCH/DELETE /api/estoque/produtos/<id>`
+  - Now fully supports the **`meta`** field (Arrecadação target).
+- **Dashboard Stats**: `GET /api/estoque/dashboard`
+  - *Auth required*. Returns dynamic stock statistics:
+    - `total_produtos`: Count of all products.
+    - `total_baixo_estoque`: Products with `estoque_atual <= estoque_minimo`.
+    - `total_recebido_kg`: Sum of weights of all completed items where unit is `kg`.
+    - `total_recebido_itens`: Total quantity of all received items.
+    - `movimentacoes_hoje`: Daily activity log count.
+    - `produtos_maior_necessidade`: Sorted list of top 5 items with lowest target achievement percentage (`estoque_atual / meta * 100`).
+    - `resumo_categoria`: Average goal completion percentages grouped by category.
+    - `atividades_recentes`: 5 most recent `ActivityLog` entries formatted with icons and relative times.
+- **Notificações**: `GET /api/notificacoes`
+  - *Auth required*. Dynamically generates alerts for all low-stock items (`estoque_atual <= estoque_minimo`) and 5 recent audit logs.
+
+### 3. Beneficiários & Entregas
+- **Beneficiários**: `GET/POST /api/beneficiarios`
+- **Busca Beneficiários**: `GET /api/beneficiarios/busca?q=<term>`
+- **Confirmar Entrega**: `POST /api/entregas_confirmar`
+
+---
+
+## 🎨 Frontend Conventions
+
+### 1. JavaScript ES Modules
+To facilitate structured calls, frontend scripts utilize ES Modules import pattern from `api.js` (such as `getToken`, `authenticatedFetch`, etc.).
+- **Crucial Rule**: Any template referencing core scripts must declare the script tag with `type="module"` to avoid syntax errors:
+  ```html
+  <script type="module" src="{% static 'js/visao-geral-estoque.js' %}"></script>
   ```
-  This serves assets correctly from `/css/`, `/js/`, and `/img/` matching the root-level relative imports.
 
-### 2. Lightweight Cryptographic Authentication
-* **Context**: The client uses `Authorization: Bearer <token>` header, but we wanted to avoid full heavyweight JWT library overhead for the simple SQLite setup.
-* **Decision**: Built a token signing layer inside `core/views.py` using Django's cryptographically secure signature helper:
-  ```python
-  from django.core.signing import Signer
-  signer = Signer()
-  
-  # Token Generation
-  token = signer.sign(str(user.id))
-  
-  # Token Validation
-  user_id = signer.unsign(token)
-  ```
-  API endpoints use a custom decorator `@api_auth_required` that extracts the Bearer token, validates the signature, retrieves the user, and binds it to `request.user`.
-
-### 3. Frontend ES Modules Integration
-* **Context**: Client-side JavaScript used to CRUD state directly against `localStorage`.
-* **Decision**: Modified `core/static/js/api.js` to point to Django's relative host endpoints (`API_BASE = ''`) and disabled simulation mode. 
-* Refactored all client scripts as modules. Corresponding HTML templates under `core/templates/` load them with `<script type="module">` to allow ES imports (`import Api from './api.js';`).
+### 2. Main Refactored Pages
+- **`visao-geral-estoque.html`**: Completely dynamic stock dashboard fetching all counters and activities from `/api/estoque/dashboard`.
+- **`vitrine-necessidade.html`**: Public donation showcase displaying active needs (items where `meta > 0`) using color-coded urgency indicators:
+  - `< 30%` achieved: **Crítico** (Red banner)
+  - `>= 100%` achieved: **Meta Atingida** (Overlay)
+  - Else: **Urgente/Padrão** (Blue banner)
+- **`metas-produtos.html`**: Admin portal to update/manage arrecadação targets (`meta`) inline.
+- **`cadastro-familia.html`**: Structure modified to class `cadastro-familia-container` and `form-panel` to ensure clean container paddings from `cadastro-familias.css`.
 
 ---
 
-## 🗄️ Database Models (`core/models.py`)
+## 🧪 Testing & Quality Assurance
 
-* **`Usuario` (AbstractUser)**: Custom authentication user with fields `nome_completo`, `cpf_cnpj`, `telefone`, `cargo` (`admin`, `operador`, `doador`), and `status` (`ativo`, `inativo`).
-* **`BeneficiaryFamily`**: Records beneficiary data, status, last delivery date, and `lgpd_accept` flag.
-* **`Product`**: Tracks inventory levels (`estoque_atual`, `estoque_minimo`, `estoque_maximo`) with `DecimalField` to preserve fractional weights precision.
-* **`DonationIntake` / `DonationItem`**: Records pending and confirmed donations. Confirmed donations automatically increment corresponding catalog product stock counts.
-* **`OutboundDelivery` / `DeliveryItem`**: Tracks beneficiary distributions. Checkout updates are atomic (`transaction.atomic()`), decrementing stock and updating the family's last delivery date.
-* **`ActivityLog`**: Logging system for auditing security/administrative actions.
-* **`GlobalConfiguration`**: Config parameters like PIX key, address, logo, and social links.
-
----
-
-## 📋 Common CLI Operations
-
+Pytest is configured as the main runner. Run the test suite using either:
 ```bash
-# Generate migrations
-python manage.py makemigrations core
+# Locally in venv
+pytest
 
-# Apply migrations
-python manage.py migrate
-
-# Seed database (Idempotent seed command utilizing get_or_create)
-python manage.py seed
-
-# Run Django unit tests (classic)
+# Via Django manager
 python manage.py test core
 
-# Run the complete test suite (pytest, ruff, pip-audit) in a clean Docker container (recommended)
-# This script automatically removes the test container and image on completion.
+# Containerized execution (recommended for CI check)
 ./run_tests_docker.sh
 ```

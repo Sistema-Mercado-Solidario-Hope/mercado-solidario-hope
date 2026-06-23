@@ -158,6 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     unidade: p.unidade || p.unidade_medida,
                     quantidade: p.quantidade || p.estoque_atual || 0,
                     estoqueMinimo: p.estoqueMinimo || p.estoque_minimo || 0,
+                    meta: p.meta || 0,
                     status: p.esgotado ? 'esgotado' : (p.estoqueCritico ? 'critico' : 'ok')
                 }));
                 renderizarTabela(paginaAtual);
@@ -181,6 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('editUnidade').value = produto.unidade;
         document.getElementById('editQuantidade').value = produto.quantidade;
         document.getElementById('editMinimo').value = produto.estoqueMinimo || '';
+        document.getElementById('editMeta').value = produto.meta || '';
 
         modalEdicao.classList.add('active');
         modalEdicao.setAttribute('aria-hidden', 'false');
@@ -208,6 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             unidade: document.getElementById('editUnidade').value,
             quantidade: parseFloat(document.getElementById('editQuantidade').value) || 0,
             estoqueMinimo: parseInt(document.getElementById('editMinimo').value, 10) || 0,
+            meta: parseFloat(document.getElementById('editMeta').value) || 0,
         };
 
         try {

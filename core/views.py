@@ -3,7 +3,7 @@ from decimal import Decimal
 from functools import wraps
 
 from django.core.signing import BadSignature, Signer
-from django.db import transaction
+from django.db import transaction, models
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -103,8 +103,8 @@ def configuracoes_view(request):
 def admin_view(request):
     return render(request, 'admin.html')
 
-def cadastro_view(request):
-    return render(request, 'cadastro.html')
+def metas_produtos_view(request):
+    return render(request, 'metas-produtos.html')
 
 def base_view(request):
     return render(request, 'base.html')
@@ -149,67 +149,6 @@ def api_login(request):
             })
 
         return JsonResponse({'erro': 'Credenciais inválidas. Use maria@exemplo.com / password'}, status=401)
-    except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
-
-@csrf_exempt
-def api_cadastro(request):
-    if request.method != 'POST':
-        return JsonResponse({'erro': 'Método não permitido'}, status=405)
-
-    try:
-        data = json.loads(request.body)
-        nome_completo = data.get('nome_completo', '').strip()
-        email = data.get('email', '').strip()
-        cpf_cnpj = data.get('cpf_cnpj', '').strip()
-        telefone = data.get('telefone', '').strip()
-        senha = data.get('senha', '')
-        confirmar_senha = data.get('confirmar_senha', '')
-
-        if not nome_completo or not email or not senha:
-            return JsonResponse({'erro': 'Nome completo, e-mail e senha são obrigatórios'}, status=400)
-
-        if senha != confirmar_senha:
-            return JsonResponse({'erro': 'As senhas não conferem'}, status=422)
-
-        if Usuario.objects.filter(Q(email=email) | Q(username=email)).exists():
-            return JsonResponse({'erro': 'E-mail já cadastrado'}, status=409)
-
-        if cpf_cnpj and Usuario.objects.filter(cpf_cnpj=cpf_cnpj).exists():
-            return JsonResponse({'erro': 'CPF/CNPJ já cadastrado'}, status=409)
-
-        # Determina o cargo base
-        # Se for o primeiro usuário, define como admin, senão operador
-        cargo = 'admin' if not Usuario.objects.exists() else 'operador'
-
-        user = Usuario.objects.create_user(
-            username=email,
-            email=email,
-            nome_completo=nome_completo,
-            cpf_cnpj=cpf_cnpj,
-            telefone=telefone,
-            cargo=cargo,
-            status='ativo',
-            is_staff=True
-        )
-        user.set_password(senha)
-        user.save()
-
-        token = generate_token(user)
-        # Registrar log
-        ActivityLog.objects.create(
-            id_usuario=user,
-            acao='CADASTRO_USUARIO',
-            descricao=f'Novo usuário cadastrado: {email}'
-        )
-        return JsonResponse({
-            'token': token,
-            'usuario': {
-                'id': user.id,
-                'nome': user.nome_completo,
-                'tipo': user.cargo
-            }
-        }, status=201)
     except Exception as e:
         return JsonResponse({'erro': str(e)}, status=500)
 
@@ -295,6 +234,7 @@ def api_produtos(request):
                 'esgotado': p.estoque_atual <= 0,
                 'estoqueCritico': p.estoque_atual <= p.estoque_minimo,
                 'foto': p.imagem_url or '',
+                'meta': float(p.meta),
                 'description': f"Lote: {p.id_produto} - Cadastrado",
             })
         return JsonResponse({'produtos': produtos_list})
@@ -316,6 +256,7 @@ def api_produtos(request):
             estoque_atual = data.get('quantidade') or data.get('estoque_atual') or 0.00
             estoque_minimo = data.get('estoqueMinimo') or data.get('estoque_minimo') or 0.00
             estoque_maximo = data.get('estoque_maximo') or 1000.00
+            meta = data.get('meta') or 0.00
             imagem_url = data.get('imagem_url') or data.get('foto')
 
             if not nome_produto or not categoria or not unidade_medida:
@@ -329,6 +270,7 @@ def api_produtos(request):
                 estoque_atual=float(estoque_atual),
                 estoque_minimo=float(estoque_minimo),
                 estoque_maximo=float(estoque_maximo),
+                meta=float(meta),
                 imagem_url=imagem_url
             )
 
@@ -373,6 +315,7 @@ def api_produto_detail(request, pk):
             unidade = data.get('unidade') or data.get('unidade_medida')
             estoque_minimo = data.get('estoqueMinimo') or data.get('estoque_minimo')
             estoque_atual = data.get('quantidade') or data.get('estoque_atual')
+            meta = data.get('meta')
 
             if nome:
                 p.nome_produto = nome.strip()
@@ -385,6 +328,8 @@ def api_produto_detail(request, pk):
                 p.estoque_minimo = float(estoque_minimo)
             if estoque_atual is not None:
                 p.estoque_atual = float(estoque_atual)
+            if meta is not None:
+                p.meta = float(meta)
 
             p.save()
 
@@ -1097,4 +1042,153 @@ def api_usuario_detail(request, pk):
         return JsonResponse({'sucesso': True})
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+
+@csrf_exempt
+@api_auth_required
+def api_dashboard_stats(request):
+    if request.method != 'GET':
+        return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+    try:
+        # 1. Total products
+        total_produtos = Product.objects.count()
+
+        # 2. Low stock products
+        total_baixo_estoque = Product.objects.filter(estoque_atual__lte=models.F('estoque_minimo')).count()
+
+        # 3. Total weight received (KG)
+        completed_donations = DonationIntake.objects.filter(status_doacao='concluida')
+        completed_items = DonationItem.objects.filter(id_doacao__in=completed_donations)
+
+        total_recebido_kg = sum(float(item.quantidade) for item in completed_items if item.id_produto and item.id_produto.unidade_medida.lower() == 'kg')
+        total_recebido_itens = sum(float(item.quantidade) for item in completed_items)
+
+        # 4. Movements today
+        hoje = timezone.now().date()
+        movimentacoes_hoje = ActivityLog.objects.filter(data_hora__date=hoje).count()
+
+        # 5. Top needs
+        produtos_meta = Product.objects.filter(meta__gt=0).select_related('categoria')
+        top_necessidades = []
+        for p in produtos_meta:
+            percent = min(100.0, float((p.estoque_atual / p.meta) * 100))
+            deficit = float(p.meta - p.estoque_atual)
+            top_necessidades.append({
+                'nome': p.nome_produto,
+                'percentual': percent,
+                'deficit': deficit,
+                'categoria': p.categoria.nome
+            })
+        top_necessidades.sort(key=lambda x: x['percentual'])
+        top_necessidades = top_necessidades[:5]
+
+        # 6. Category achieved
+        resumo_categoria = []
+        for cat in Category.objects.all():
+            prods = Product.objects.filter(categoria=cat)
+            total_estoque = sum(p.estoque_atual for p in prods)
+            total_meta = sum(p.meta for p in prods)
+            percent = min(100.0, float((total_estoque / total_meta) * 100)) if total_meta > 0 else 0.0
+            resumo_categoria.append({
+                'nome': cat.nome,
+                'percentual': percent
+            })
+
+        # 7. Recent activities
+        recent_activities = []
+        logs = ActivityLog.objects.all().order_by('-data_hora')[:5]
+        for l in logs:
+            icon = '➕'
+            if 'CADASTRO' in l.acao or 'CRIACAO' in l.acao:
+                icon = '👥'
+            elif 'EDICAO' in l.acao or 'ATUALIZA' in l.acao:
+                icon = '📝'
+            elif 'DISTRIBUICAO' in l.acao or 'SAIDA' in l.acao:
+                icon = '📦'
+            elif 'AJUSTE' in l.acao:
+                icon = '🔧'
+            elif 'LIMPEZA' in l.acao:
+                icon = '🗑️'
+            
+            diff = timezone.now() - l.data_hora
+            if diff.days > 0:
+                time_str = f"Há {diff.days} dia(s)"
+            elif diff.seconds >= 3600:
+                time_str = f"Há {diff.seconds // 3600} hora(s)"
+            elif diff.seconds >= 60:
+                time_str = f"Há {diff.seconds // 60} min"
+            else:
+                time_str = "Agora mesmo"
+
+            recent_activities.append({
+                'titulo': l.acao.replace('_', ' ').title(),
+                'descricao': l.descricao,
+                'tempo': time_str,
+                'icon': icon
+            })
+
+        return JsonResponse({
+            'total_produtos': total_produtos,
+            'total_baixo_estoque': total_baixo_estoque,
+            'total_recebido_kg': total_recebido_kg,
+            'total_recebido_itens': total_recebido_itens,
+            'movimentacoes_hoje': movimentacoes_hoje,
+            'produtos_maior_necessidade': top_necessidades,
+            'resumo_categoria': resumo_categoria,
+            'atividades_recentes': recent_activities
+        })
+    except Exception as e:
+        return JsonResponse({'erro': str(e)}, status=500)
+
+
+@csrf_exempt
+@api_auth_required
+def api_notificacoes(request):
+    if request.method != 'GET':
+        return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+    try:
+        notifications_list = []
+
+        # 1. Low stock products
+        low_stock_prods = Product.objects.filter(estoque_atual__lte=models.F('estoque_minimo'))
+        for p in low_stock_prods:
+            notifications_list.append({
+                'id': f"low-stock-{p.id_produto}",
+                'title': 'Estoque baixo',
+                'description': f"O produto {p.nome_produto} atingiu o estoque mínimo de {p.estoque_minimo} {p.unidade_medida}.",
+                'time': 'Ação requerida',
+                'icon': '⚠️',
+                'read': False
+            })
+
+        # 2. Recent activity logs
+        logs = ActivityLog.objects.all().order_by('-data_hora')[:5]
+        for l in logs:
+            icon = '👥' if 'CADASTRO' in l.acao or 'CRIACAO' in l.acao else '📦'
+            
+            diff = timezone.now() - l.data_hora
+            if diff.days > 0:
+                time_str = f"Há {diff.days} dia(s)"
+            elif diff.seconds >= 3600:
+                time_str = f"Há {diff.seconds // 3600} hora(s)"
+            elif diff.seconds >= 60:
+                time_str = f"Há {diff.seconds // 60} min"
+            else:
+                time_str = "Agora mesmo"
+
+            notifications_list.append({
+                'id': f"log-{l.id_historico}",
+                'title': l.acao.replace('_', ' ').title(),
+                'description': l.descricao,
+                'time': time_str,
+                'icon': icon,
+                'read': True
+            })
+
+        return JsonResponse({'notificacoes': notifications_list})
+    except Exception as e:
+        return JsonResponse({'erro': str(e)}, status=500)
+
 

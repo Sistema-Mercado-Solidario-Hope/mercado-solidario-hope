@@ -6,9 +6,12 @@ Mercado Solidário (HOPE) is a unified Django monolithic web application designe
 
 ## 🚀 Features
 
-* **Authentication & RBAC**: Custom Bearer token-signed authentication layer utilizing secure cryptographic signatures (`django.core.signing.Signer`).
+* **Authentication & RBAC**: Custom Bearer token-signed authentication layer utilizing secure cryptographic signatures (`django.core.signing.Signer`). External signup is deprecated; user accounts are managed internally by administrators.
 * **Cashier Terminal (Frente de Caixa)**: High-speed checkout terminal for beneficiary basket distribution checking stock limits.
 * **Database Catalog & CRUD**: Full database integrations for beneficiary families, products catalog, donations, and activity auditing history.
+* **Stock Dashboard Overview**: Live stock management metrics, including total products, low-stock warnings, collected item metrics, daily movements, and top necessities.
+* **Product Goals (Metas de Arrecadação)**: Administrative tools to configure and modify collection targets (`meta`), which dynamically update the public donation showcase.
+* **Dynamic Notifications**: Navigation bar warning alerts for low-stock products and recent audit history.
 * **Institutional Configurations**: Custom settings for PIX key, address parameters, and institutional information.
 * **Auditing Logs**: Audits administrative transactions and stock adjustments.
 
@@ -71,9 +74,18 @@ docker compose up --build
 
 ## 🧪 Running Tests
 
-Execute Django unit tests to verify business validations:
+Execute the test suite locally using Django's test manager or pytest:
 ```bash
+# Using Django test manager
 python manage.py test core
+
+# Using pytest
+pytest
+```
+
+Or run the tests containerized:
+```bash
+./run_tests_docker.sh
 ```
 
 ---

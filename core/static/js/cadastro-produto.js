@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const unidadeSelect = document.getElementById('unidade');
     const estoqueMinInput = document.getElementById('estoqueMinimo');
     const estoqueMaxInput = document.getElementById('estoqueMaximo');
+    const metaInput = document.getElementById('metaArrecadacao');
     const lgpdCheckbox = document.getElementById('lgpdConsent');
 
     // ==================== FUNÇÕES AUXILIARES ====================
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearAllErrors() {
-        [nomeInput, categoriaSelect, unidadeSelect, estoqueMinInput, estoqueMaxInput].forEach(clearFieldError);
+        [nomeInput, categoriaSelect, unidadeSelect, estoqueMinInput, estoqueMaxInput, metaInput].forEach(clearFieldError);
         dropZone.classList.remove('input-error'); // limpa erro da imagem
         const lgpdError = document.querySelector('.lgpd-error');
         if (lgpdError) lgpdError.classList.remove('lgpd-error');
@@ -117,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==================== LIMPEZA DE ERROS AO DIGITAR/SELECIONAR ====================
-    [nomeInput, estoqueMinInput, estoqueMaxInput].forEach(input => {
+    [nomeInput, estoqueMinInput, estoqueMaxInput, metaInput].forEach(input => {
         input.addEventListener('input', () => clearFieldError(input));
     });
     [categoriaSelect, unidadeSelect].forEach(select => {
@@ -185,6 +186,13 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = false;
         }
 
+        // 5. Meta de arrecadação
+        let meta = parseInt(metaInput.value, 10);
+        if (isNaN(meta) || meta < 0) {
+            showFieldError(metaInput, 'Informe uma meta de arrecadação válida (≥ 0).');
+            isValid = false;
+        }
+
         // 5. Imagem do produto (obrigatória)
         if (!fileInput.files.length || !previewImage.src) {
             dropZone.classList.add('input-error');
@@ -223,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quantidade: 0,
             estoqueMinimo: min,
             estoque_maximo: max,
+            meta: meta,
             imagem_url: photoUrl
         };
 

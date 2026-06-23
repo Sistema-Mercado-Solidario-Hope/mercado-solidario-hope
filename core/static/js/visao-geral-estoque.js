@@ -1,155 +1,212 @@
 /**
- * Visão Geral Estoque - Funcionalidades específicas
+ * Visão Geral Estoque - Funcionalidades específicas com dados dinâmicos
  */
+
+import Api from './api.js';
 
 (function() {
     document.addEventListener('DOMContentLoaded', function() {
         initPagina();
     });
 
-    function initPagina() {
-        // 1. Aplicar as alterações solicitadas
-        aplicarAlteracoesDashboard();
+    async function initPagina() {
+        // 1. Carregar dados reais do backend
+        try {
+            const data = await Api.get('/api/estoque/dashboard');
+            if (data && !data.erro) {
+                renderizarDashboard(data);
+            } else {
+                console.error("Erro ao carregar dados do dashboard:", data?.erro || "Desconhecido");
+            }
+        } catch (e) {
+            console.error("Erro de conexão ao carregar dashboard:", e);
+        }
 
-        // 2. Preencher notificações de exemplo
-        populateNotifications();
-
-        // 3. Configurar eventos dos filtros
+        // 2. Configurar eventos dos filtros
         initFilterButtons();
 
-        // 4. Efeitos de hover e scroll
+        // 3. Efeitos de hover e scroll
         initHoverEffects();
         initSmoothScroll();
     }
 
     /**
-     * Aplica as modificações pedidas:
-     * - Card azul: "Produtos com Baixa Quantidade"
-     * - Card marrom: "Total Recebido" com valor "482 kg"
-     * - Card cinza: "Itens Recebidos" com valor "1.284"
+     * Preenche a tela com os dados do dashboard recebidos do backend.
      */
-    function aplicarAlteracoesDashboard() {
-        // 1. Card azul (segundo card da stats-grid)
+    function renderizarDashboard(data) {
+        // 1. Card Roxo - Produtos Cadastrados
+        const cardRoxo = document.querySelector('.stat-card.purple');
+        if (cardRoxo) {
+            const h2 = cardRoxo.querySelector('h2');
+            if (h2) h2.innerText = data.total_produtos;
+        }
+
+        // 2. Card Azul - Produtos com Baixa Quantidade
         const cardAzul = document.querySelector('.stat-card.blue');
         if (cardAzul) {
-            const smallAzul = cardAzul.querySelector('small');
-            if (smallAzul) smallAzul.innerText = 'Produtos com Baixa Quantidade';
-            // Mantém o valor 14 (pode ser alterado se desejar)
-            // const h2Azul = cardAzul.querySelector('h2');
-            // if (h2Azul) h2Azul.innerText = '14';
+            const small = cardAzul.querySelector('small');
+            if (small) small.innerText = 'Produtos com Baixa Quantidade';
+            const h2 = cardAzul.querySelector('h2');
+            if (h2) h2.innerText = data.total_baixo_estoque;
         }
 
-        // 2. Card marrom (terceiro card)
+        // 3. Card Marrom - Total Recebido
         const cardMarrom = document.querySelector('.stat-card.brown');
         if (cardMarrom) {
-            const smallMarrom = cardMarrom.querySelector('small');
-            if (smallMarrom) smallMarrom.innerText = 'Total Recebido';
-            const h2Marrom = cardMarrom.querySelector('h2');
-            if (h2Marrom) h2Marrom.innerText = '482 kg';
+            const small = cardMarrom.querySelector('small');
+            if (small) small.innerText = 'Total Recebido';
+            const h2 = cardMarrom.querySelector('h2');
+            if (h2) h2.innerText = `${data.total_recebido_kg.toLocaleString('pt-BR')} kg`;
         }
 
-        // 3. Card cinza (quarto card)
+        // 4. Card Cinza - Itens Recebidos
         const cardCinza = document.querySelector('.stat-card.gray');
         if (cardCinza) {
-            const smallCinza = cardCinza.querySelector('small');
-            if (smallCinza) smallCinza.innerText = 'Itens Recebidos';
-            const h2Cinza = cardCinza.querySelector('h2');
-            if (h2Cinza) h2Cinza.innerText = '1.284';
+            const small = cardCinza.querySelector('small');
+            if (small) small.innerText = 'Itens Recebidos';
+            const h2 = cardCinza.querySelector('h2');
+            if (h2) h2.innerText = data.total_recebido_itens.toLocaleString('pt-BR');
         }
 
-        // Opcional: ajustar o card roxo permanece "Produtos Cadastrados"
-    }
+        // 5. Produtos com Maior Necessidade progress bars
+        const goalsGrid = document.querySelector('.chart-panel .goals-grid');
+        if (goalsGrid) {
+            goalsGrid.innerHTML = '';
+            if (data.produtos_maior_necessidade && data.produtos_maior_necessidade.length > 0) {
+                data.produtos_maior_necessidade.forEach((prod) => {
+                    const item = document.createElement('div');
+                    let progressClass = '';
+                    if (prod.percentual < 30) progressClass = 'red-progress';
+                    else if (prod.percentual < 70) progressClass = 'brown-progress';
+                    else progressClass = 'purple-progress';
 
-    /**
-     * Preenche a lista de notificações com dados simulados.
-     */
-    function populateNotifications() {
-        const notificationList = document.getElementById('notificationList');
-        if (!notificationList) return;
-        if (notificationList.children.length > 0 && !notificationList.innerHTML.includes('item-placeholder')) {
-            return;
-        }
+                    const pctRounded = Math.round(prod.percentual);
+                    const deficitLabel = prod.deficit > 0 ? `Faltam ${prod.deficit} unidades` : 'Meta Atingida';
 
-        const sampleNotifications = [
-            {
-                title: 'Estoque baixo',
-                desc: 'Arroz atingiu o estoque mínimo. Reposição necessária.',
-                time: 'Há 10 minutos',
-                unread: true,
-                icon: '⚠️'
-            },
-            {
-                title: 'Entrada registrada',
-                desc: '50 kg de Feijão foram adicionados ao estoque.',
-                time: 'Há 1 hora',
-                unread: true,
-                icon: '📦'
-            },
-            {
-                title: 'Alta demanda',
-                desc: 'Leite integral está entre os itens mais pedidos pelas famílias.',
-                time: 'Há 3 horas',
-                unread: false,
-                icon: '📈'
-            },
-            {
-                title: 'Novo cadastro',
-                desc: 'Família Oliveira foi cadastrada no sistema.',
-                time: 'Ontem',
-                unread: false,
-                icon: '👥'
-            }
-        ];
-
-        notificationList.innerHTML = '';
-        sampleNotifications.forEach(notif => {
-            const item = document.createElement('div');
-            item.className = `notification-item ${notif.unread ? 'unread' : ''}`;
-            item.innerHTML = `
-                <div class="notification-icon">${notif.icon}</div>
-                <div class="notification-content">
-                    <div class="notification-title">${notif.title}</div>
-                    <div class="notification-desc">${notif.desc}</div>
-                    <div class="notification-time">${notif.time}</div>
-                </div>
-                <button class="notification-delete-btn" aria-label="Excluir notificação">×</button>
-            `;
-            const deleteBtn = item.querySelector('.notification-delete-btn');
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    item.remove();
-                    updateNotificationDot();
+                    item.innerHTML = `
+                        <div class="goal-label">
+                          <span>${prod.nome} (${prod.categoria})</span>
+                          <strong>${pctRounded}% (${deficitLabel})</strong>
+                        </div>
+                        <div class="progress ${progressClass}"><span style="width: ${pctRounded}%"></span></div>
+                    `;
+                    goalsGrid.appendChild(item);
                 });
+            } else {
+                goalsGrid.innerHTML = '<p class="poppins-regular" style="color:var(--text-muted); margin-top: 10px;">Nenhuma meta cadastrada ou ativa.</p>';
             }
-            notificationList.appendChild(item);
-        });
+        }
 
-        updateNotificationDot();
-    }
+        // 6. Resumo por Categoria
+        const categoriesGrid = document.querySelector('.goals-panel .goals-grid');
+        if (categoriesGrid) {
+            categoriesGrid.innerHTML = '';
+            if (data.resumo_categoria && data.resumo_categoria.length > 0) {
+                data.resumo_categoria.forEach(cat => {
+                    const item = document.createElement('div');
+                    const pctRounded = Math.round(cat.percentual);
+                    item.innerHTML = `
+                        <div class="goal-label">
+                            <span>${cat.nome}</span>
+                            <strong>${pctRounded}%</strong>
+                        </div>
+                        <div class="progress"><span style="width: ${pctRounded}%"></span></div>
+                    `;
+                    categoriesGrid.appendChild(item);
+                });
+            } else {
+                categoriesGrid.innerHTML = '<p class="poppins-regular" style="color:var(--text-muted); margin-top: 10px;">Nenhuma categoria ativa.</p>';
+            }
+        }
 
-    function updateNotificationDot() {
-        const dot = document.querySelector('.notification-dot');
-        if (!dot) return;
-        const unreadItems = document.querySelectorAll('.notification-item.unread');
-        dot.classList.toggle('hidden', unreadItems.length === 0);
+        // 7. Atividades Recentes
+        const activitiesPanel = document.querySelector('.activities-panel');
+        if (activitiesPanel) {
+            const title = activitiesPanel.querySelector('h2');
+            activitiesPanel.innerHTML = '';
+            if (title) activitiesPanel.appendChild(title);
+
+            if (data.atividades_recentes && data.atividades_recentes.length > 0) {
+                data.atividades_recentes.forEach(act => {
+                    const item = document.createElement('div');
+                    item.className = 'activity';
+                    let bgClass = 'blue-bg';
+                    if (act.icon === '👥') bgClass = 'purple-bg';
+                    else if (act.icon === '📦') bgClass = 'orange-bg';
+                    else if (act.icon === '🔧') bgClass = 'blue-bg';
+                    else if (act.icon === '📝') bgClass = 'purple-bg';
+
+                    item.innerHTML = `
+                      <span class="activity-icon ${bgClass}">${act.icon}</span>
+                      <div>
+                        <strong>${act.titulo}</strong>
+                        <p>${act.descricao}</p>
+                        <small>${act.tempo}</small>
+                      </div>
+                    `;
+                    activitiesPanel.appendChild(item);
+                });
+            } else {
+                const noAct = document.createElement('p');
+                noAct.className = 'poppins-regular';
+                noAct.style.color = 'var(--text-muted)';
+                noAct.style.marginTop = '16px';
+                noAct.innerText = 'Nenhuma atividade recente registrada.';
+                activitiesPanel.appendChild(noAct);
+            }
+        }
+
+        // 8. Low Stock alerts (Alerts grid)
+        const alertsGrid = document.querySelector('.alerts-grid');
+        if (alertsGrid) {
+            alertsGrid.innerHTML = '';
+            if (data.total_baixo_estoque > 0) {
+                const alertCard = document.createElement('div');
+                alertCard.className = 'alert-card danger';
+                alertCard.innerHTML = `
+                    <strong>Estoque Baixo</strong>
+                    <p>Existem ${data.total_baixo_estoque} produtos abaixo da quantidade mínima cadastrada e precisam de reposição imediata.</p>
+                `;
+                alertsGrid.appendChild(alertCard);
+            } else {
+                const alertCard = document.createElement('div');
+                alertCard.className = 'alert-card info';
+                alertCard.innerHTML = `
+                    <strong>Estoque Normal</strong>
+                    <p>Todos os produtos estão com níveis saudáveis de estoque.</p>
+                `;
+                alertsGrid.appendChild(alertCard);
+            }
+
+            const infoCard = document.createElement('div');
+            infoCard.className = 'alert-card info';
+            infoCard.innerHTML = `
+                <strong>Operação Normal</strong>
+                <p>O fluxo de distribuição está funcionando perfeitamente. Registre saídas através do Frente de Caixa.</p>
+            `;
+            alertsGrid.appendChild(infoCard);
+        }
     }
 
     function initFilterButtons() {
         const filterBtns = document.querySelectorAll('.filter-btn');
         filterBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', async function(e) {
                 e.preventDefault();
                 const originalText = this.innerText;
                 this.innerText = 'Atualizando...';
-                setTimeout(() => {
-                    this.innerText = originalText;
-                    if (typeof window.showToast === 'function') {
-                        window.showToast('Dados atualizados com sucesso!', 'success');
-                    } else {
-                        alert('Simulação: dados atualizados');
+                try {
+                    const data = await Api.get('/api/estoque/dashboard');
+                    if (data && !data.erro) {
+                        renderizarDashboard(data);
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('Dados atualizados com sucesso!', 'success');
+                        }
                     }
-                }, 800);
+                } catch (err) {
+                    console.error("Erro ao atualizar dados:", err);
+                }
+                this.innerText = originalText;
             });
         });
     }
@@ -185,6 +242,4 @@
             });
         });
     }
-
-    window.visao-geral-estoqueHelpers = { updateNotificationDot };
 })();
