@@ -1,6 +1,16 @@
 import Api from './api.js?v=3';
 
+function verificarSessao() {
+    const token = localStorage.getItem('ms_token');
+    if (!token) {
+        window.location.href = './login.html';
+        return false;
+    }
+    return true;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    if (!verificarSessao()) return;
 
     let itensCatalogo = [];
 
@@ -141,6 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const payload = {
+            status: 'concluida',
             doador: {
                 nome: nome,
                 telefone: telefone

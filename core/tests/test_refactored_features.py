@@ -1,8 +1,10 @@
 import json
+
 from django.test import TestCase
-from django.utils import timezone
-from core.models import Usuario, Category, Product, ActivityLog, DonationIntake, DonationItem
+
+from core.models import ActivityLog, Category, DonationIntake, DonationItem, Product, Usuario
 from core.views import generate_token
+
 
 class RefactoredFeaturesTests(TestCase):
     def setUp(self):
@@ -75,7 +77,7 @@ class RefactoredFeaturesTests(TestCase):
         }
         # Clear out activity logs to prevent matching old logs
         ActivityLog.objects.all().delete()
-        
+
         response = self.client.post(
             '/api/estoque/produtos',
             data=json.dumps(payload),

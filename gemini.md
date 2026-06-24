@@ -67,14 +67,8 @@ To facilitate structured calls, frontend scripts utilize ES Modules import patte
 
 ## 🧪 Testing & Quality Assurance
 
-Pytest is configured as the main runner. Run the test suite using either:
+All tests must be executed using Docker only. Run the containerized test suite using:
 ```bash
-# Locally in venv
-pytest
-
-# Via Django manager
-python manage.py test core
-
-# Containerized execution (recommended for CI check)
+# Containerized execution
 ./run_tests_docker.sh
 ```

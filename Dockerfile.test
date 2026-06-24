@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install python dependencies (including dev and test requirements)
 COPY requirements.txt requirements.txt /app/
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir pytest pytest-django ruff pip-audit
 
 # Copy project files
 COPY . /app/

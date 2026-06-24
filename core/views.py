@@ -1,9 +1,11 @@
 import json
+import random
+import string
 from decimal import Decimal
 from functools import wraps
 
 from django.core.signing import BadSignature, Signer
-from django.db import transaction, models
+from django.db import models, transaction
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -815,14 +817,26 @@ def api_intencao_doacao(request):
             nome = doador.get('nome', '').strip()
             telefone = doador.get('telefone', '').strip()
             itens = data.get('itens', [])
+            status = data.get('status', 'pendente')
 
             if not nome or not telefone or not itens:
                 return JsonResponse({'erro': 'Dados do doador e lista de itens são obrigatórios'}, status=400)
 
+            if status not in ['pendente', 'concluida']:
+                return JsonResponse({'erro': 'Status inválido'}, status=400)
+
+            user = None
+            if status == 'concluida':
+                auth_header = request.headers.get('Authorization')
+                if not auth_header or not auth_header.startswith('Bearer '):
+                    return JsonResponse({'erro': 'Não autorizado'}, status=401)
+                token = auth_header.split(' ')[1]
+                user = get_user_from_token(token)
+                if not user or user.status == 'inativo' or user.cargo not in ['admin', 'colaborador', 'operador']:
+                    return JsonResponse({'erro': 'Não autorizado'}, status=401)
+
             # Gerar código de rastreamento doação
             ano = timezone.now().year
-            import random
-            import string
             rand = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             tracking_code = f"#DOA-{ano}-{rand}"
 
@@ -830,8 +844,10 @@ def api_intencao_doacao(request):
                 donation = DonationIntake.objects.create(
                     nome_doador=nome,
                     telefone_doador=telefone,
-                    status_doacao='pendente',
-                    codigo_rastreamento=tracking_code
+                    status_doacao=status,
+                    codigo_rastreamento=tracking_code,
+                    id_usuario=user if status == 'concluida' else None,
+                    data_recebimento=timezone.now() if status == 'concluida' else None
                 )
 
                 for item in itens:
@@ -851,6 +867,17 @@ def api_intencao_doacao(request):
                         id_produto=product,
                         nome_item_personalizado=nome_extra if not product else None,
                         quantidade=quantidade
+                    )
+
+                    if status == 'concluida' and product:
+                        product.estoque_atual += Decimal(str(quantidade))
+                        product.save()
+
+                if status == 'concluida':
+                    ActivityLog.objects.create(
+                        id_usuario=user,
+                        acao='ENTRADA_ESTOQUE_DIRETA',
+                        descricao=f'Entrada direta de estoque registrada via doação {donation.codigo_rastreamento}.'
                     )
 
             return JsonResponse({
@@ -1125,7 +1152,7 @@ def api_dashboard_stats(request):
                 icon = '🔧'
             elif 'LIMPEZA' in l.acao:
                 icon = '🗑️'
-            
+
             diff = timezone.now() - l.data_hora
             if diff.days > 0:
                 time_str = f"Há {diff.days} dia(s)"
@@ -1182,7 +1209,7 @@ def api_notificacoes(request):
         logs = ActivityLog.objects.all().order_by('-data_hora')[:5]
         for l in logs:
             icon = '👥' if 'CADASTRO' in l.acao or 'CRIACAO' in l.acao else '📦'
-            
+
             diff = timezone.now() - l.data_hora
             if diff.days > 0:
                 time_str = f"Há {diff.days} dia(s)"

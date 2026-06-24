@@ -1,16 +1,38 @@
-document.addEventListener('DOMContentLoaded', () => {
+import Api from './api.js?v=3';
+
+document.addEventListener('DOMContentLoaded', async () => {
 
     // ==================== LISTA DE ITENS (SIMULAÇÃO DO BACKEND) ====================
-    const itensDisponiveis = [
-        { id: 1, nome: 'Arroz (kg)', categoria: 'alimentos', icone: '🍚' },
-        { id: 2, nome: 'Feijão Preto (kg)', categoria: 'alimentos', icone: '🫘' },
-        { id: 3, nome: 'Óleo de Soja (ml)', categoria: 'alimentos', icone: '🛢️' },
-        { id: 4, nome: 'Leite Integral (L)', categoria: 'alimentos', icone: '🥛' },
-        { id: 5, nome: 'Sabonete', categoria: 'higiene', icone: '🧼' },
-        { id: 6, nome: 'Creme Dental', categoria: 'higiene', icone: '🪥' },
-        { id: 7, nome: 'Detergente', categoria: 'limpeza', icone: '🧴' },
-        { id: 8, nome: 'Fralda Infantil (pacote)', categoria: 'infantil', icone: '👶' }
-    ];
+    let itensDisponiveis = [];
+
+    function getIconePorCategoria(cat) {
+        const icons = {
+            'Cereais': '🍚',
+            'Leguminosas': '🫘',
+            'Higiene': '🧼',
+            'Proteínas': '🥛',
+            'Limpeza': '🧴',
+            'Cesta Básica': '🧺'
+        };
+        return icons[cat] || '📦';
+    }
+
+    async function carregarCatalogo() {
+        try {
+            const data = await Api.get('/api/estoque/produtos');
+            if (data && data.produtos) {
+                itensDisponiveis = data.produtos.map(p => ({
+                    id: p.id,
+                    nome: `${p.nome} (${p.unidade})`,
+                    categoria: p.categoria,
+                    icone: getIconePorCategoria(p.categoria)
+                }));
+                renderizarItens();
+            }
+        } catch (e) {
+            console.error('Erro ao carregar catálogo:', e);
+        }
+    }
 
     const listaItensContainer = document.getElementById('listaItens');
     const btnAdicionarItem = document.getElementById('btnAdicionarItem');
@@ -195,13 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return overlay;
     }
 
-    function mostrarModalSucesso(nomeDoador, totalItens, telefone) {
+    function mostrarModalSucesso(nomeDoador, totalItens, codigo) {
         const overlay = criarModalSucesso();
         
         const mensagem = overlay.querySelector('.sucesso-mensagem');
         mensagem.textContent = `Obrigado, ${nomeDoador}! Sua intenção de doação com ${totalItens} item(ns) foi registrada.`;
 
-        const codigo = gerarCodigoIntencao();
         overlay.querySelector('#codigoIntencao').textContent = codigo;
 
         const detalhe = overlay.querySelector('.sucesso-detalhe');
@@ -269,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==================== SUBMISSÃO DO FORMULÁRIO ====================
-    formIntencao.addEventListener('submit', (e) => {
+    formIntencao.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const nome = document.getElementById('nomeCompleto').value.trim();
@@ -330,19 +351,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('📦 Intenção de doação pronta para envio ao backend:', doacao);
 
-        mostrarModalSucesso(nome.split(' ')[0], doacao.itens.length, telefone);
+        try {
+            const res = await Api.post('/api/intencao-doacao', {
+                status: 'pendente',
+                doador: doacao.doador,
+                itens: doacao.itens
+            });
+            if (res && (res.status === 201 || !res.erro)) {
+                const trackingCode = res.data?.codigo_rastreamento || gerarCodigoIntencao();
+                mostrarModalSucesso(nome.split(' ')[0], doacao.itens.length, trackingCode);
 
-        formIntencao.reset();
-        document.querySelectorAll('.item-extra-row').forEach(el => el.remove());
-        itensDisponiveis.forEach(item => {
-            const input = document.getElementById(`qtd-${item.id}`);
-            if (input) input.value = 0;
-        });
-        limparErroLgpd();
+                formIntencao.reset();
+                document.querySelectorAll('.item-extra-row').forEach(el => el.remove());
+                itensDisponiveis.forEach(item => {
+                    const input = document.getElementById(`qtd-${item.id}`);
+                    if (input) input.value = 0;
+                });
+                limparErroLgpd();
+            } else {
+                mostrarAviso(res.erro || res.data?.erro || 'Erro ao registrar intenção de doação.');
+            }
+        } catch (err) {
+            mostrarAviso('Erro de conexão ao salvar intenção de doação.');
+        }
     });
 
     // ==================== INICIALIZAÇÃO ====================
-    renderizarItens();
+    await carregarCatalogo();
 
     // ==================== BOTÃO VOLTAR AO TOPO (FAB) ====================
     const fab = document.getElementById('scrollToTopBtn');

@@ -97,17 +97,9 @@ docker compose up --build
 
 ## 🧪 Executando os Testes
 
-Execute a suíte de testes localmente utilizando o gerenciador de testes do Django ou o pytest:
+Todos os testes devem ser executados obrigatoriamente utilizando contêineres Docker:
 ```bash
-# Utilizando o gerenciador do Django
-python manage.py test core
-
-# Utilizando o pytest
-pytest
-```
-
-Ou execute os testes em um contêiner Docker:
-```bash
+# Execução containerizada
 ./run_tests_docker.sh
 ```
 
@@ -226,17 +218,9 @@ docker compose up --build
 
 ## 🧪 Running Tests
 
-Execute the test suite locally using Django's test manager or pytest:
+All tests must be run using Docker containerization:
 ```bash
-# Using Django test manager
-python manage.py test core
-
-# Using pytest
-pytest
-```
-
-Or run the tests containerized:
-```bash
+# Containerized execution
 ./run_tests_docker.sh
 ```
 

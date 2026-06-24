@@ -88,3 +88,58 @@ class DonationTests(TestCase):
         self.assertEqual(donation.status_doacao, 'concluida')
         self.assertIsNotNone(donation.data_recebimento)
         self.assertEqual(float(self.product.estoque_atual), 125.00) # 100.00 + 25.00
+
+    def test_create_donation_intake_direct_entry_success(self):
+        payload = {
+            'status': 'concluida',
+            'doador': {
+                'nome': 'Doador Exemplo',
+                'telefone': '(47) 99999-1234'
+            },
+            'itens': [
+                {'id': self.product.id_produto, 'quantidade': 35.00}
+            ]
+        }
+        # Verify initial stock is 100.00
+        self.product.refresh_from_db()
+        self.assertEqual(float(self.product.estoque_atual), 100.00)
+
+        response = self.client.post(
+            '/api/intencao-doacao',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 201)
+        data = json.loads(response.content)
+        self.assertTrue(data['sucesso'])
+
+        # Verify donation is concluida and stock increased
+        donation = DonationIntake.objects.get(codigo_rastreamento=data['codigo_rastreamento'])
+        self.assertEqual(donation.status_doacao, 'concluida')
+        self.assertEqual(donation.id_usuario, self.operator)
+        self.product.refresh_from_db()
+        self.assertEqual(float(self.product.estoque_atual), 135.00)
+
+    def test_create_donation_intake_direct_entry_unauthorized(self):
+        payload = {
+            'status': 'concluida',
+            'doador': {
+                'nome': 'Doador Exemplo',
+                'telefone': '(47) 99999-1234'
+            },
+            'itens': [
+                {'id': self.product.id_produto, 'quantidade': 35.00}
+            ]
+        }
+        # Post without self.headers
+        response = self.client.post(
+            '/api/intencao-doacao',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 401)
+
+        # Stock should not change
+        self.product.refresh_from_db()
+        self.assertEqual(float(self.product.estoque_atual), 100.00)

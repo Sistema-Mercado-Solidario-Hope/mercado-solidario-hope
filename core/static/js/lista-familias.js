@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     telefone: b.telefone,
                     endereco: b.endereco || '',
                     numMembros: b.members || b.numMembros || b.qtdIntegrantes || 1,
-                    status: (b.status_pt || b.status || '').toLowerCase() === 'inactive' ? 'inativo' : 'ativo',
+                    status: ['inactive', 'inativo'].includes((b.status_pt || b.status || '').toLowerCase()) ? 'inativo' : 'ativo',
                     ultimaParticipacao: b.ultimaParticipacao
                 }));
                 renderizarTabela(termoBusca, paginaAtual);

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from core.models import Usuario, GlobalConfiguration
+from core.models import GlobalConfiguration, Usuario
 
 
 class Command(BaseCommand):
@@ -44,7 +44,7 @@ class Command(BaseCommand):
             self.stdout.write('Operator user created (operador@mercadosolidario.com / password).')
 
         # Seed Global Configuration
-        config, created = GlobalConfiguration.objects.get_or_create(
+        _, created = GlobalConfiguration.objects.get_or_create(
             id=1,
             defaults={
                 'telefone_contato': '554732073009',
