@@ -148,7 +148,7 @@ def api_login(request):
                 }
             })
 
-        return JsonResponse({'erro': 'Credenciais inválidas. Use maria@exemplo.com / password'}, status=401)
+        return JsonResponse({'erro': 'Credenciais inválidas. Use admin@mercadosolidario.com / admin'}, status=401)
     except Exception as e:
         return JsonResponse({'erro': str(e)}, status=500)
 
@@ -449,8 +449,8 @@ def api_beneficiarios(request):
             if nome_familia and not nome_familia.lower().startswith('família'):
                 nome_familia = f"Família {nome_familia}"
 
-            if not nome_familia or not responsavel_nome or not telefone:
-                return JsonResponse({'erro': 'Nome da família, responsável e telefone são obrigatórios'}, status=400)
+            if not nome_familia or not responsavel_nome or not telefone or not cpf_nis or not endereco:
+                return JsonResponse({'erro': 'Nome da família, responsável, telefone, CPF/NIS e endereço são obrigatórios'}, status=400)
 
             # Verifica LGPD
             if not lgpd_accept:
@@ -572,17 +572,30 @@ def api_beneficiario_detail(request, pk):
             numero_membros = data.get('numMembros') or data.get('members')
             status = data.get('status')
 
-            if nome_familia:
+            if 'nome' in data or 'nomeFamilia' in data:
+                if not nome_familia or not nome_familia.strip():
+                    return JsonResponse({'erro': 'Nome da família é obrigatório'}, status=400)
                 if not nome_familia.lower().startswith('família'):
                     nome_familia = f"Família {nome_familia}"
                 f.nome_familia = nome_familia.strip()
-            if responsavel_nome:
+            if 'responsavel' in data or 'responsavel_nome' in data:
+                if not responsavel_nome or not responsavel_nome.strip():
+                    return JsonResponse({'erro': 'Responsável é obrigatório'}, status=400)
                 f.responsavel_nome = responsavel_nome.strip()
-            if cpf_nis:
+            if 'cpf_nis' in data or 'nis' in data or 'cpf' in data:
+                if not cpf_nis or not cpf_nis.strip():
+                    return JsonResponse({'erro': 'CPF/NIS é obrigatório'}, status=400)
+                # Verifica duplicidade
+                if BeneficiaryFamily.objects.filter(cpf_nis=cpf_nis.strip()).exclude(pk=f.pk).exists():
+                    return JsonResponse({'erro': 'CPF/NIS já cadastrado para outra família'}, status=409)
                 f.cpf_nis = cpf_nis.strip()
-            if telefone:
+            if 'telefone' in data:
+                if not telefone or not telefone.strip():
+                    return JsonResponse({'erro': 'Telefone é obrigatório'}, status=400)
                 f.telefone = telefone.strip()
-            if endereco:
+            if 'endereco' in data:
+                if not endereco or not endereco.strip():
+                    return JsonResponse({'erro': 'Endereço é obrigatório'}, status=400)
                 f.endereco = endereco.strip()
             if numero_membros is not None:
                 f.numero_membros = int(numero_membros)
@@ -718,6 +731,7 @@ def api_configuracoes(request):
         return JsonResponse({
             'telefone_contato': config.telefone_contato,
             'endereco_instituicao': config.endereco_instituicao,
+            'cep_instituicao': config.cep_instituicao,
             'pix_key': config.pix_key,
             'cnpj': config.cnpj,
             'email_contato': config.email_contato,
@@ -738,6 +752,7 @@ def api_configuracoes(request):
             data = json.loads(request.body)
             config.telefone_contato = data.get('telefone_contato', config.telefone_contato)
             config.endereco_instituicao = data.get('endereco_instituicao', config.endereco_instituicao)
+            config.cep_instituicao = data.get('cep_instituicao', config.cep_instituicao)
             config.pix_key = data.get('pix_key', config.pix_key)
             config.cnpj = data.get('cnpj', config.cnpj)
             config.email_contato = data.get('email_contato', config.email_contato)

@@ -53,11 +53,12 @@ const Api = {
         headers: this.headers(),
         body: JSON.stringify(body)
       });
-      if (res.status === 401) {
+      if (res.status === 401 && endpoint !== '/api/auth/login' && endpoint !== '/api/auth/cadastro') {
         this.logout();
-        return { status: 401, data: { erro: "Não autorizado" } };
+        return { status: 401, data: { erro: "Não autorizado" }, erro: "Não autorizado" };
       }
-      return { status: res.status, data: await res.json() };
+      const data = await res.json();
+      return { status: res.status, data, erro: res.status >= 400 ? (data.erro || 'Erro na requisição') : null };
     } catch (e) {
       console.warn("Fallback para simulação por falha de conexão física de API:", e);
       return this.simulatePost(endpoint, body);
@@ -77,9 +78,10 @@ const Api = {
       });
       if (res.status === 401) {
         this.logout();
-        return { status: 401, data: { erro: "Não autorizado" } };
+        return { status: 401, data: { erro: "Não autorizado" }, erro: "Não autorizado" };
       }
-      return { status: res.status, data: await res.json() };
+      const data = await res.json();
+      return { status: res.status, data, erro: res.status >= 400 ? (data.erro || 'Erro na requisição') : null };
     } catch (e) {
       console.warn("Fallback para simulação por falha de conexão física de API:", e);
       return this.simulatePatch(endpoint, body);
@@ -88,7 +90,7 @@ const Api = {
 
   async delete(endpoint) {
     if (this.isSimulationActive()) {
-      return { status: 200, data: { sucesso: true } };
+      return { status: 200, data: { sucesso: true }, erro: null };
     }
 
     try {
@@ -98,12 +100,13 @@ const Api = {
       });
       if (res.status === 401) {
         this.logout();
-        return { status: 401, data: { erro: "Não autorizado" } };
+        return { status: 401, data: { erro: "Não autorizado" }, erro: "Não autorizado" };
       }
-      return { status: res.status, data: await res.json() };
+      const data = await res.json();
+      return { status: res.status, data, erro: res.status >= 400 ? (data.erro || 'Erro na requisição') : null };
     } catch (e) {
       console.error(e);
-      return { status: 500, data: { erro: "Erro de conexão" } };
+      return { status: 500, data: { erro: "Erro de conexão" }, erro: "Erro de conexão" };
     }
   },
 

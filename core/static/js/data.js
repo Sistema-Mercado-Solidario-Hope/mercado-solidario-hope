@@ -233,17 +233,17 @@ export const INITIAL_BENEFICIARIES = [
 export const MOCK_USERS_SEED = [
   {
     id: "user-1",
-    name: "Maria Silva",
-    email: "maria@exemplo.com",
+    name: "Administrador do Sistema",
+    email: "admin@mercadosolidario.com",
     cpfCnpj: "000.000.000-00",
     phone: "(11) 99999-9999",
     role: "admin",
-    senha: "password"
+    senha: "admin"
   },
   {
     id: "user-2",
-    name: "Gabriel Oliveira",
-    email: "operador@mercadosolidario.com.br",
+    name: "Operador",
+    email: "operador@mercadosolidario.com",
     cpfCnpj: "777.777.777-77",
     phone: "(11) 98888-8888",
     role: "operador",

@@ -1,4 +1,4 @@
-import Api from './api.js';
+import Api from './api.js?v=3';
 
 document.addEventListener('DOMContentLoaded', async () => {
     'use strict';
@@ -224,14 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cnpj = document.getElementById('cnpj-input').value.trim();
         
         const logradouro = document.getElementById('logradouro').value.trim();
-        const numero = document.getElementById('numero').value.trim();
-        const bairro = document.getElementById('bairro').value.trim();
         const cep = document.getElementById('cep').value.trim();
-        
-        let endereco = logradouro;
-        if (numero) endereco += `, ${numero}`;
-        if (bairro) endereco += `, ${bairro}`;
-        if (cep) endereco += `, ${cep}`;
 
         const pixKey = document.getElementById('pix-key-field').value.trim();
         
@@ -242,7 +235,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const payload = {
             telefone_contato: telWhatsapp,
             cnpj: cnpj,
-            endereco_instituicao: endereco,
+            endereco_instituicao: logradouro,
+            cep_instituicao: cep,
             pix_key: pixKey,
             qr_code_image: qrCodeImage
         };
@@ -446,16 +440,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('tel-whatsapp').value = data.telefone_contato || '';
                 document.getElementById('cnpj-input').value = data.cnpj || '';
 
-                const addr = data.endereco_instituicao || '';
-                const parts = addr.split(',').map(p => p.trim());
-                if (parts.length >= 4) {
-                    document.getElementById('logradouro').value = parts[0];
-                    document.getElementById('numero').value = parts[1];
-                    document.getElementById('bairro').value = parts[2];
-                    document.getElementById('cep').value = parts[3];
-                } else {
-                    document.getElementById('logradouro').value = addr;
-                }
+                document.getElementById('logradouro').value = data.endereco_instituicao || '';
+                document.getElementById('cep').value = data.cep_instituicao || '';
 
                 document.getElementById('pix-key-field').value = data.pix_key || '';
 

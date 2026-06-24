@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/familia-listagem.css">
+    <link rel="stylesheet" href="css/base.css?v=3">
+    <link rel="stylesheet" href="css/familia-listagem.css?v=3">
 </head>
 <body>
 
@@ -80,7 +80,7 @@
         </nav>
 
         <div class="sidebar-footer">
-            <a href="cadastro-familia.html" class="btn-new-register poppins-semibold" style="text-align: center; display: block; text-decoration: none;">
+            <a href="cadastro-familia.html" class="btn-new-register poppins-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -157,7 +157,7 @@
     <main class="main-content" id="mainContent">
         <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-        <section class="cadastro-container">
+        <section class="listagem-familias-container">
             <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
                 <div>
                     <h2 class="poppins-bold page-title">Listagem de Famílias</h2>
@@ -228,8 +228,8 @@
         </section>
 
         <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
-        <div class="modal-overlay" id="modalExclusao" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
-            <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
+        <div class="modal-confirmacao-overlay" id="modalExclusao" aria-hidden="true">
+            <div class="modal-confirmacao-card">
                 <span style="font-size:48px; color:var(--danger); display:block; margin-bottom:16px;">⚠️</span>
                 <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark); margin-bottom:12px;">Confirmar Exclusão</h3>
                 <p class="poppins-regular" style="color:var(--text-main); font-size:14px; margin-bottom:24px;">Tem certeza que deseja excluir esta família beneficiária? Esta ação não poderá ser desfeita.</p>
@@ -249,7 +249,7 @@
         </footer>
     </main>
 
-    <script src="js/base.js" type="module"></script>
-    <script src="js/lista-familias.js" type="module"></script>
+    <script src="js/base.js?v=3" type="module"></script>
+    <script src="js/lista-familias.js?v=3" type="module"></script>
 </body>
 </html>

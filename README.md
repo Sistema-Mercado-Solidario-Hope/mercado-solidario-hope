@@ -24,6 +24,19 @@ Mercado Solidário (HOPE) is a unified Django monolithic web application designe
 * **Frontend**: Plain Vanilla CSS, JS, and HTML5 (served via Django Static files)
 * **Orchestration**: Docker & Docker Compose
 
+## ⚙️ Environment Variables
+
+The application reads configurations from environment variables. You can define these in a `.env` file at the root of the project:
+
+* `SECRET_KEY`: Django cryptographic secret key.
+* `DEBUG`: Toggle development debug logs (`True` or `False`). Defaults to `False` if not specified.
+
+Create a `.env` file with the following content:
+```env
+DEBUG=True
+SECRET_KEY=your-custom-secret-key-here
+```
+
 ---
 
 ## 📦 Running the Application
@@ -51,8 +64,8 @@ Ensure you have Python 3.12+ and a virtual environment configured.
    ```bash
    python manage.py seed
    ```
-   *Default Administrative User*: `maria@exemplo.com` / `password`
-   *Default Operator User*: `operador@mercadosolidario.com.br` / `password`
+   *Default Administrative User*: `admin@mercadosolidario.com` / `admin`
+   *Default Operator User*: `operador@mercadosolidario.com` / `password`
 
 5. **Run the Development Server**:
    ```bash

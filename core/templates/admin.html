@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/base.css?v=3">
+    <link rel="stylesheet" href="css/admin.css?v=3">
 </head>
 <body>
 
@@ -79,7 +79,7 @@
         </nav>
 
         <div class="sidebar-footer">
-            <a href="cadastro-familia.html" class="btn-new-register poppins-semibold" style="text-align: center; display: block; text-decoration: none;">
+            <a href="cadastro-familia.html" class="btn-new-register poppins-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -161,8 +161,9 @@
     <main class="main-content" id="mainContent">
         <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-        <!-- PAINEL PERFIL -->
-        <section class="admin-panel active" id="panel-perfil">
+        <div class="admin-container">
+            <!-- PAINEL PERFIL -->
+            <section class="admin-panel active" id="panel-perfil">
             <div class="profile-layout" style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
                 <div class="profile-card avatar-card" style="background:#FFF; padding:24px; border-radius:12px; border:1px solid var(--border-color); text-align:center;">
                     <div class="avatar-wrapper" style="position:relative; display:inline-block; margin: 0 auto 16px;">
@@ -292,7 +293,7 @@
         </section>
 
         <!-- MODAL USUÁRIO -->
-        <div class="modal-overlay" id="modalUsuario" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
+        <div class="modal-overlay" id="modalUsuario" aria-hidden="true">
             <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:480px; width:100%; position:relative;">
                 <button type="button" id="closeModalUsuario" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
                 <h3 class="poppins-bold" id="modalUsuarioTitulo" style="font-size:18px; margin-bottom:20px; color:var(--text-dark);">Novo Funcionário</h3>
@@ -332,8 +333,8 @@
         </div>
 
         <!-- MODAL CONFIRMAR EXCLUSÃO USUÁRIO -->
-        <div class="modal-overlay" id="modalExclusaoUsuario" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
-            <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
+        <div class="modal-confirmacao-overlay" id="modalExclusaoUsuario" aria-hidden="true">
+            <div class="modal-confirmacao-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
                 <span style="font-size:48px; color:var(--danger); display:block; margin-bottom:16px;">⚠️</span>
                 <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark); margin-bottom:12px;">Confirmar Exclusão</h3>
                 <p class="poppins-regular" style="color:var(--text-main); font-size:14px; margin-bottom:24px;">Tem certeza que deseja excluir esta conta de usuário? Esta ação não poderá ser desfeita.</p>
@@ -345,8 +346,8 @@
         </div>
 
         <!-- MODAL CONFIRMAR LIMPAR HISTÓRICO -->
-        <div class="modal-overlay" id="modalLimparHistorico" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:200;">
-            <div class="modal-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
+        <div class="modal-confirmacao-overlay" id="modalLimparHistorico" aria-hidden="true">
+            <div class="modal-confirmacao-card" style="background:#FFF; padding:32px; border-radius:12px; max-width:400px; width:100%; text-align:center;">
                 <span style="font-size:48px; color:var(--danger); display:block; margin-bottom:16px;">🗑️</span>
                 <h3 class="poppins-bold" style="font-size:18px; color:var(--text-dark); margin-bottom:12px;">Limpar Todo o Histórico</h3>
                 <p class="poppins-regular" style="color:var(--text-main); font-size:14px; margin-bottom:24px;">Tem certeza que deseja apagar de forma definitiva todo o histórico de atividades do sistema? Esta ação é irreversível.</p>
@@ -355,6 +356,8 @@
                     <button type="button" class="poppins-semibold" id="btnConfirmarLimparHistorico" style="padding:12px 24px; background:var(--danger); color:#FFF; border:none; border-radius:8px; cursor:pointer;">Limpar Tudo</button>
                 </div>
             </div>
+        </div>
+
         </div>
 
         <!-- RODAPÉ -->
@@ -366,7 +369,7 @@
         </footer>
     </main>
 
-    <script src="js/base.js" type="module"></script>
-    <script src="js/admin.js" type="module"></script>
+    <script src="js/base.js?v=3" type="module"></script>
+    <script src="js/admin.js?v=3" type="module"></script>
 </body>
 </html>

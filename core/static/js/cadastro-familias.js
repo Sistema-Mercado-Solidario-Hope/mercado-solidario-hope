@@ -1,4 +1,4 @@
-import Api from './api.js';
+import Api from './api.js?v=3';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const idInput = document.getElementById('familiaId');
     const nomeInput = document.getElementById('nomeFamilia');
     const responsavelInput = document.getElementById('responsavel');
+    const cpfNisInput = document.getElementById('cpf_nis');
     const telefoneInput = document.getElementById('telefone');
     const enderecoInput = document.getElementById('endereco');
     const numMembrosInput = document.getElementById('numMembros');
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 responsavelInput.value = data.responsavel || data.responsavel_nome || '';
                 telefoneInput.value = data.telefone || '';
                 enderecoInput.value = data.endereco || '';
+                if (cpfNisInput) cpfNisInput.value = data.cpf_nis || data.nis || data.cpf || '';
                 numMembrosInput.value = data.members || data.numMembros || 1;
                 statusSelect.value = data.status_pt || (data.status === 'ACTIVE' ? 'ativo' : 'inativo');
                 if (lgpdCheckbox) lgpdCheckbox.checked = true;
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==================== VALIDAÇÃO E ENVIO ====================
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        [nomeInput, responsavelInput, telefoneInput, numMembrosInput].forEach(clearFieldError);
+        [nomeInput, responsavelInput, cpfNisInput, telefoneInput, enderecoInput, numMembrosInput].forEach(clearFieldError);
 
         let valid = true;
 
@@ -104,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const responsavel = sanitize(responsavelInput.value);
+        const cpfNis = cpfNisInput ? sanitize(cpfNisInput.value) : '';
         let telefone = telefoneInput.value.trim();
         const numerosTelefone = telefone.replace(/\D/g, '');
         const endereco = sanitize(enderecoInput.value);
@@ -114,8 +117,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             showFieldError(responsavelInput, 'Responsável é obrigatório.');
             valid = false;
         }
+        if (!cpfNis) {
+            showFieldError(cpfNisInput, 'CPF ou NIS é obrigatório.');
+            valid = false;
+        }
         if (numerosTelefone.length < 10) {
             showFieldError(telefoneInput, 'Telefone inválido (mínimo 10 dígitos).');
+            valid = false;
+        }
+        if (!endereco) {
+            showFieldError(enderecoInput, 'Endereço é obrigatório.');
             valid = false;
         }
         if (isNaN(numMembros) || numMembros < 1) {
@@ -139,6 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             responsavel: responsavel,
             telefone: telefone,
             endereco: endereco,
+            cpf_nis: cpfNis,
             numMembros: numMembros,
             status: status,
             lgpdConsent: true
@@ -166,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Limpeza de erros ao digitar
-    [nomeInput, responsavelInput, telefoneInput, numMembrosInput].forEach(input => {
+    [nomeInput, responsavelInput, cpfNisInput, telefoneInput, enderecoInput, numMembrosInput].forEach(input => {
         if (input) {
             input.addEventListener('input', () => clearFieldError(input));
         }

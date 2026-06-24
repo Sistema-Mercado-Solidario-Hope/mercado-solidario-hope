@@ -1,4 +1,4 @@
-import Api from './api.js';
+import Api from './api.js?v=3';
 
 document.addEventListener('DOMContentLoaded', async () => {
 

@@ -1,5 +1,5 @@
 import { toast } from './toast.js';      // antes: './js/toast.js'
-import Api from './api.js';              // antes: './js/api.js'
+import Api from './api.js?v=3';              // antes: './js/api.js'
 import { initLocalStorage } from './data.js'; // antes: './js/data.js'
 
 initLocalStorage();

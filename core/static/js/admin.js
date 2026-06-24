@@ -1,4 +1,4 @@
-import Api from './api.js';
+import Api from './api.js?v=3';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -224,6 +224,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     window.fecharModalUsuario = fecharModalUsuario; // expose globally as inline HTML button refers to it
+    window.abrirModalUsuario = abrirModalUsuario; // expose globally as inline HTML button refers to it
+
+    const btnNovoUsuario = document.getElementById('btnNovoUsuario');
+    if (btnNovoUsuario) {
+        btnNovoUsuario.addEventListener('click', () => abrirModalUsuario('Novo Funcionário'));
+    }
 
     function editarUsuario(id) {
         const u = usuarios.find(u => u.id === id);
