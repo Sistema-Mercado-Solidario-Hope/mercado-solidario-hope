@@ -255,8 +255,98 @@ document.querySelectorAll('.mobile-nav-item').forEach(item => {
         e.preventDefault();
         document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
+        const href = this.getAttribute('href');
+        if (href) {
+            window.location.href = href;
+        }
     });
 });
 
-// Expor showToast globalmente
+// ============ SIDEBAR DROPDOWNS & ACTIVE LINK DETECTION ============
+function initSidebarDropdowns() {
+    const triggers = document.querySelectorAll('.dropdown-trigger');
+    
+    triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            const containerId = trigger.getAttribute('aria-controls');
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+            
+            trigger.setAttribute('aria-expanded', !isExpanded);
+            if (!isExpanded) {
+                container.classList.add('open');
+                container.style.maxHeight = container.scrollHeight + 'px';
+            } else {
+                container.classList.remove('open');
+                container.style.maxHeight = '0px';
+            }
+        });
+    });
+
+    // Detect current path and mark active / expand parent
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a, .sidebar-footer a');
+    
+    const getFilename = (pathStr) => {
+        if (!pathStr) return '';
+        const lastSlash = pathStr.lastIndexOf('/');
+        let name = lastSlash !== -1 ? pathStr.substring(lastSlash + 1) : pathStr;
+        return name.split('?')[0];
+    };
+    
+    const pathFile = getFilename(currentPath);
+
+    sidebarLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        
+        const hrefFile = getFilename(href);
+        const isMatch = pathFile === hrefFile || (pathFile === '' && hrefFile === 'admin.html');
+                        
+        if (isMatch) {
+            link.classList.add('active');
+            
+            // If the active item is inside a dropdown container, expand it
+            const container = link.closest('.dropdown-container');
+            if (container) {
+                container.classList.add('open');
+                container.style.maxHeight = container.scrollHeight + 'px';
+                
+                const triggerId = container.getAttribute('id');
+                const trigger = document.querySelector(`[aria-controls="${triggerId}"]`);
+                if (trigger) {
+                    trigger.setAttribute('aria-expanded', 'true');
+                }
+            } else {
+                // If it's a direct li child, add active to parent li
+                const parentLi = link.closest('li');
+                if (parentLi && !parentLi.classList.contains('sidebar-dropdown')) {
+                    parentLi.classList.add('active');
+                }
+            }
+        }
+    });
+
+    // Highlight mobile bottom nav items similarly
+    const mobileBottomLinks = document.querySelectorAll('.mobile-bottom-nav a');
+    mobileBottomLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        
+        const hrefFile = getFilename(href);
+        const isMatch = pathFile === hrefFile || (pathFile === '' && hrefFile === 'admin.html');
+                        
+        if (isMatch) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// Call on load
+initSidebarDropdowns();
+
+// Expor showToast e initSidebarDropdowns globalmente
 window.showToast = showToast;
+window.initSidebarDropdowns = initSidebarDropdowns;

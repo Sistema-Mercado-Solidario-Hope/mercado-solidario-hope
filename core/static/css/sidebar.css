@@ -103,7 +103,6 @@
     background-color: var(--border-color);
     margin-bottom: 24px;
 }
-
 /* ── Responsividade Mobile ───────────────────────────────────── */
 @media (max-width: 768px) {
     .sidebar {
