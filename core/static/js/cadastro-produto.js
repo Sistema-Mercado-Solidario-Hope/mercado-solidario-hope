@@ -213,17 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Use a generic placeholder corresponding to selected category to look premium
-        const imagePlaceholderMap = {
-            'Cereais': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=120',
-            'Leguminosas': 'https://images.unsplash.com/photo-1551462147-37885acc36f1?auto=format&fit=crop&w=120',
-            'Higiene': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=120',
-            'Proteínas': 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=120',
-            'Limpeza': 'https://images.unsplash.com/photo-1563453392212-326f5e854473?auto=format&fit=crop&w=120',
-            'Outros': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=120'
-        };
-        const photoUrl = imagePlaceholderMap[categoriaSelect.value] || imagePlaceholderMap['Outros'];
-
         const payload = {
             nome: nome,
             categoria: categoriaSelect.value,
@@ -232,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             estoqueMinimo: min,
             estoque_maximo: max,
             meta: meta,
-            imagem_url: photoUrl
+            imagem_url: previewImage.src
         };
 
         try {

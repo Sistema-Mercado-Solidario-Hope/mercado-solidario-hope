@@ -143,3 +143,22 @@ class DonationTests(TestCase):
         # Stock should not change
         self.product.refresh_from_db()
         self.assertEqual(float(self.product.estoque_atual), 100.00)
+
+    def test_create_donation_intake_unregistered_product(self):
+        payload = {
+            'doador': {
+                'nome': 'Doador Exemplo',
+                'telefone': '(47) 99999-1234'
+            },
+            'itens': [
+                {'id': 99999, 'quantidade': 50.00}
+            ]
+        }
+        response = self.client.post(
+            '/api/intencao-doacao',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.content)
+        self.assertIn('erro', data)

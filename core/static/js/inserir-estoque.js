@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const listaItens = document.getElementById('listaItens');
     const form = document.getElementById('formEntrada');
-    const btnAddItem = document.getElementById('btnAdicionarItem');
     const telefoneInput = document.getElementById('telefoneDoador');
 
     // Máscara de telefone
@@ -65,19 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Adicionar item personalizado
-    btnAddItem.addEventListener('click', () => {
-        const extra = document.createElement('div');
-        extra.className = 'item-card';
-        extra.style = 'display:flex; gap:10px; align-items:center;';
-        extra.innerHTML = `
-            <input type="text" class="form-input nome-extra" placeholder="Nome do item" style="flex:2; padding:6px 12px; border:1px solid var(--border-color); border-radius:6px;">
-            <input type="number" min="1" step="any" value="1" class="form-input qtd-extra" style="width:80px; padding:6px 12px; border:1px solid var(--border-color); border-radius:6px;">
-            <button type="button" class="btn-remover-item" style="background:none; border:none; color:var(--danger); cursor:pointer;">🗑️</button>
-        `;
-        extra.querySelector('.btn-remover-item').addEventListener('click', () => extra.remove());
-        listaItens.appendChild(extra);
-    });
+
 
     function showToast(msg, type = 'success') {
         if (typeof window.showToast === 'function') {
@@ -134,16 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        document.querySelectorAll('.item-card:not(:has(.qtd-item))').forEach(card => {
-            const nomeItem = card.querySelector('.nome-extra').value.trim();
-            const qtd = parseFloat(card.querySelector('.qtd-extra').value);
-            if (nomeItem && qtd > 0) {
-                itensList.push({
-                    nome: nomeItem,
-                    quantidade: qtd
-                });
-            }
-        });
+
 
         if (itensList.length === 0) {
             showToast('Adicione pelo menos um item com quantidade.', 'error');

@@ -1,5 +1,7 @@
 import json
+import os
 
+from django.conf import settings
 from django.test import TestCase
 
 from core.models import Category, Product, Usuario
@@ -39,6 +41,37 @@ class ProductCRUDTests(TestCase):
         data = json.loads(response.content)
         self.assertTrue(Product.objects.filter(pk=data['id']).exists())
         self.assertEqual(Product.objects.get(pk=data['id']).nome_produto, 'Arroz Especial')
+
+    def test_create_product_with_base64_image(self):
+        base64_png = (
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+        )
+        payload = {
+            'nome': 'Produto com Imagem',
+            'categoria': 'Higiene',
+            'unidade': 'un',
+            'quantidade': 10,
+            'estoqueMinimo': 2.00,
+            'estoque_maximo': 100.00,
+            'imagem_url': base64_png
+        }
+        response = self.client.post(
+            '/api/estoque/produtos',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 201)
+        data = json.loads(response.content)
+        product = Product.objects.get(pk=data['id'])
+        self.assertTrue(product.imagem_url.startswith('/img/uploads/'))
+
+        filename = product.imagem_url.replace('/img/uploads/', '')
+        filepath = os.path.join(settings.BASE_DIR, 'core', 'static', 'img', 'uploads', filename)
+        self.assertTrue(os.path.exists(filepath))
+
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
     def test_update_product(self):
         cat, _ = Category.objects.get_or_create(nome='Cesta Básica')

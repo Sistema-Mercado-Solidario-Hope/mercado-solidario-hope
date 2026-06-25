@@ -1,9 +1,13 @@
+import base64
 import json
+import os
 import random
 import string
+import uuid
 from decimal import Decimal
 from functools import wraps
 
+from django.conf import settings
 from django.core.signing import BadSignature, Signer
 from django.db import models, transaction
 from django.db.models import Q
@@ -37,6 +41,29 @@ def get_user_from_token(token):
         return Usuario.objects.get(id=user_id)
     except (BadSignature, Usuario.DoesNotExist):
         return None
+
+def save_base64_image(base64_str):
+    if not base64_str or not isinstance(base64_str, str):
+        return base64_str
+    if not base64_str.startswith('data:image/'):
+        return base64_str
+    try:
+        header, base64_data = base64_str.split(';base64,')
+        ext = header.split('/')[-1]
+        if ext == 'jpeg':
+            ext = 'jpg'
+        ext = ext.split(';')[0]
+        image_data = base64.b64decode(base64_data)
+        upload_dir = os.path.join(settings.BASE_DIR, 'core', 'static', 'img', 'uploads')
+        os.makedirs(upload_dir, exist_ok=True)
+        filename = f"{uuid.uuid4()}.{ext}"
+        filepath = os.path.join(upload_dir, filename)
+        with open(filepath, 'wb') as f:
+            f.write(image_data)
+        return f"/img/uploads/{filename}"
+    except Exception as e:
+        print(f"Error saving base64 image: {e}")
+        return base64_str
 
 # Auth decorator for API views
 def api_auth_required(view_func):
@@ -264,6 +291,9 @@ def api_produtos(request):
             if not nome_produto or not categoria or not unidade_medida:
                 return JsonResponse({'erro': 'Campos obrigatórios ausentes'}, status=400)
 
+            if imagem_url:
+                imagem_url = save_base64_image(imagem_url)
+
             category_obj, _ = Category.objects.get_or_create(nome=categoria.strip())
             p = Product.objects.create(
                 nome_produto=nome_produto.strip(),
@@ -318,6 +348,7 @@ def api_produto_detail(request, pk):
             estoque_minimo = data.get('estoqueMinimo') or data.get('estoque_minimo')
             estoque_atual = data.get('quantidade') or data.get('estoque_atual')
             meta = data.get('meta')
+            imagem_url = data.get('imagem_url') or data.get('foto')
 
             if nome:
                 p.nome_produto = nome.strip()
@@ -332,6 +363,8 @@ def api_produto_detail(request, pk):
                 p.estoque_atual = float(estoque_atual)
             if meta is not None:
                 p.meta = float(meta)
+            if imagem_url is not None:
+                p.imagem_url = save_base64_image(imagem_url)
 
             p.save()
 
@@ -825,6 +858,21 @@ def api_intencao_doacao(request):
             if status not in ['pendente', 'concluida']:
                 return JsonResponse({'erro': 'Status inválido'}, status=400)
 
+            # Validar que todos os itens referenciam produtos cadastrados
+            validated_items = []
+            for item in itens:
+                prod_id = item.get('id')
+                quantidade = float(item.get('quantidade', 0))
+                if not prod_id:
+                    return JsonResponse({'erro': 'Todos os itens devem estar cadastrados no sistema'}, status=400)
+                if quantidade <= 0:
+                    return JsonResponse({'erro': 'A quantidade de cada item deve ser maior que zero'}, status=400)
+                try:
+                    product = Product.objects.get(pk=prod_id)
+                    validated_items.append((product, quantidade))
+                except Product.DoesNotExist:
+                    return JsonResponse({'erro': f'Produto com ID {prod_id} não está cadastrado'}, status=400)
+
             user = None
             if status == 'concluida':
                 auth_header = request.headers.get('Authorization')
@@ -850,26 +898,15 @@ def api_intencao_doacao(request):
                     data_recebimento=timezone.now() if status == 'concluida' else None
                 )
 
-                for item in itens:
-                    prod_id = item.get('id')
-                    nome_extra = item.get('nome')
-                    quantidade = float(item.get('quantidade', 1))
-
-                    product = None
-                    if prod_id:
-                        try:
-                            product = Product.objects.get(pk=prod_id)
-                        except Product.DoesNotExist:
-                            pass
-
+                for product, quantidade in validated_items:
                     DonationItem.objects.create(
                         id_doacao=donation,
                         id_produto=product,
-                        nome_item_personalizado=nome_extra if not product else None,
+                        nome_item_personalizado=None,
                         quantidade=quantidade
                     )
 
-                    if status == 'concluida' and product:
+                    if status == 'concluida':
                         product.estoque_atual += Decimal(str(quantidade))
                         product.save()
 
@@ -942,27 +979,31 @@ def api_intencao_doacao_status(request, pk):
         if status not in ['concluida', 'cancelada', 'pendente']:
             return JsonResponse({'erro': 'Status inválido'}, status=400)
 
+        # Validar itens antes da transação se fornecidos
+        itens_data = data.get('itens')
+        validated_items = []
+        if itens_data is not None:
+            for item in itens_data:
+                prod_id = item.get('id') or item.get('produto_id')
+                quantidade = float(item.get('quantidade', 0))
+                if not prod_id:
+                    return JsonResponse({'erro': 'Todos os itens devem estar cadastrados no sistema'}, status=400)
+                if quantidade <= 0:
+                    return JsonResponse({'erro': 'A quantidade de cada item deve ser maior que zero'}, status=400)
+                try:
+                    product = Product.objects.get(pk=prod_id)
+                    validated_items.append((product, quantidade))
+                except Product.DoesNotExist:
+                    return JsonResponse({'erro': f'Produto com ID {prod_id} não está cadastrado'}, status=400)
+
         with transaction.atomic():
-            # Optionally update items if provided
-            itens_data = data.get('itens')
             if itens_data is not None:
                 donation.itens.all().delete()
-                for item in itens_data:
-                    prod_id = item.get('id') or item.get('produto_id')
-                    nome_extra = item.get('nome') or item.get('produto_nome') or item.get('nome_produto')
-                    quantidade = float(item.get('quantidade', 1))
-
-                    product = None
-                    if prod_id:
-                        try:
-                            product = Product.objects.get(pk=prod_id)
-                        except Product.DoesNotExist:
-                            pass
-
+                for product, quantidade in validated_items:
                     DonationItem.objects.create(
                         id_doacao=donation,
                         id_produto=product,
-                        nome_item_personalizado=nome_extra if not product else None,
+                        nome_item_personalizado=None,
                         quantidade=quantidade
                     )
 

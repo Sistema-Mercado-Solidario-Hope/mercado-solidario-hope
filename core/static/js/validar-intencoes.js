@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Novos botões
     const btnToggleCatalogo = document.getElementById('btnToggleCatalogo');
-    const btnAddItemPersonalizado = document.getElementById('btnAddItemPersonalizado');
     const catalogoContainer = document.getElementById('catalogoItensContainer');
     const catalogoLista = document.getElementById('catalogoItensLista');
 
@@ -264,45 +263,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         toast(`Item "${nome}" adicionado.`, 'success');
     }
 
-    function adicionarItemPersonalizado() {
-        if (!intencaoAtual) return;
 
-        const personalizadoRow = document.createElement('div');
-        personalizadoRow.className = 'item-extra-row-modal';
-        personalizadoRow.style = 'display:flex; gap:10px; margin-top:10px; align-items:center;';
-        personalizadoRow.innerHTML = `
-            <input type="text" class="poppins-regular nome-extra form-input" placeholder="Nome do item" style="flex:2; padding:6px 12px; border:1px solid var(--border-color); border-radius:6px;">
-            <input type="number" class="poppins-regular qtd-extra form-input" min="1" value="1" placeholder="Qtd" style="width:80px; padding:6px 12px; border:1px solid var(--border-color); border-radius:6px;">
-            <button type="button" class="btn-remover-item-modal poppins-medium" style="background:none; border:none; color:var(--danger); cursor:pointer;">🗑️ Remover</button>
-        `;
-
-        const btnRemover = personalizadoRow.querySelector('.btn-remover-item-modal');
-        btnRemover.addEventListener('click', () => {
-            personalizadoRow.remove();
-            toast('Item personalizado removido', 'info');
-        });
-
-        modalItensContainer.appendChild(personalizadoRow);
-    }
 
     // ==================== SALVAR E CONFIRMAR ====================
     async function salvarEdicaoLocal() {
         if (!intencaoAtual) return;
-
-        // Processa extras pendentes
-        const linhasExtras = document.querySelectorAll('.item-extra-row-modal');
-        linhasExtras.forEach(linha => {
-            const nome = linha.querySelector('.nome-extra').value.trim();
-            const qtd = parseFloat(linha.querySelector('.qtd-extra').value);
-            if (nome && qtd > 0) {
-                intencaoAtual.itens.push({
-                    id: null,
-                    nome: nome,
-                    quantidade: qtd
-                });
-            }
-            linha.remove();
-        });
 
         try {
             const res = await Api.patch(`/api/intencao-doacao/${intencaoAtual.id}/status`, {
@@ -323,21 +288,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function confirmarRecebimento() {
         if (!intencaoAtual) return;
-
-        // Processa extras pendentes
-        const linhasExtras = document.querySelectorAll('.item-extra-row-modal');
-        linhasExtras.forEach(linha => {
-            const nome = linha.querySelector('.nome-extra').value.trim();
-            const qtd = parseFloat(linha.querySelector('.qtd-extra').value);
-            if (nome && qtd > 0) {
-                intencaoAtual.itens.push({
-                    id: null,
-                    nome: nome,
-                    quantidade: qtd
-                });
-            }
-            linha.remove();
-        });
 
         // Remove itens com quantidade zero
         intencaoAtual.itens = intencaoAtual.itens.filter(item => item.quantidade > 0);
@@ -392,7 +342,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    btnAddItemPersonalizado.addEventListener('click', adicionarItemPersonalizado);
     btnSalvarEdicao.addEventListener('click', salvarEdicaoLocal);
     btnConfirmarRecebimento.addEventListener('click', confirmarRecebimento);
 

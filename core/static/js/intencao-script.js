@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const listaItensContainer = document.getElementById('listaItens');
-    const btnAdicionarItem = document.getElementById('btnAdicionarItem');
     const formIntencao = document.getElementById('formIntencao');
 
     // Referências LGPD
@@ -140,27 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return cardDiv;
     }
 
-    function adicionarItemExtra(nome = '', quantidade = '') {
-        const extraDiv = document.createElement('div');
-        extraDiv.className = 'item-extra-row';
-        extraDiv.innerHTML = `
-            <input type="text" class="poppins-regular item-extra-nome" placeholder="Nome do item" value="${nome}">
-            <input type="number" class="poppins-regular item-extra-qtd" min="1" value="${quantidade}" placeholder="Qtd">
-            <button type="button" class="btn-remover-item poppins-medium">
-                <span>🗑️</span> Remover
-            </button>
-        `;
 
-        extraDiv.querySelector('.btn-remover-item').addEventListener('click', () => {
-            extraDiv.remove();
-        });
-
-        listaItensContainer.appendChild(extraDiv);
-    }
-
-    btnAdicionarItem.addEventListener('click', () => {
-        adicionarItemExtra();
-    });
 
     // ==================== VALIDAÇÃO LGPD ====================
     function limparErroLgpd() {
@@ -331,19 +310,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        const extras = document.querySelectorAll('.item-extra-row');
-        extras.forEach(extra => {
-            const nomeExtra = extra.querySelector('.item-extra-nome').value.trim();
-            const qtdExtra = parseInt(extra.querySelector('.item-extra-qtd').value, 10);
-            if (nomeExtra && qtdExtra > 0) {
-                doacao.itens.push({
-                    id: null,
-                    nome: nomeExtra,
-                    quantidade: qtdExtra
-                });
-            }
-        });
-
         if (doacao.itens.length === 0) {
             mostrarAviso('Adicione pelo menos um item com quantidade maior que zero.');
             return;
@@ -362,7 +328,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 mostrarModalSucesso(nome.split(' ')[0], doacao.itens.length, trackingCode);
 
                 formIntencao.reset();
-                document.querySelectorAll('.item-extra-row').forEach(el => el.remove());
                 itensDisponiveis.forEach(item => {
                     const input = document.getElementById(`qtd-${item.id}`);
                     if (input) input.value = 0;
