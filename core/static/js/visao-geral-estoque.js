@@ -2,7 +2,7 @@
  * Visão Geral Estoque - Funcionalidades específicas com dados dinâmicos
  */
 
-import Api from './api.js?v=3';
+import Api from './api.js';
 
 (function() {
     document.addEventListener('DOMContentLoaded', function() {

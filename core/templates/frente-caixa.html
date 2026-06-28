@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css?v=3">
-    <link rel="stylesheet" href="css/frente-caixa.css?v=3">
+    <link rel="stylesheet" href="/css/base.css?v=4">
+    <link rel="stylesheet" href="/css/frente-caixa.css?v=4">
 </head>
 <body>
 
@@ -347,7 +347,49 @@
         </div>
     </main>
 
-    <script src="js/base.js?v=3" type="module" defer></script>
-    <script src="js/frente-caixa.js?v=3" type="module"></script>
+    <!-- BARRA MOBILE INFERIOR -->
+    <nav class="mobile-bottom-nav" id="mobileNav" aria-label="Navegação principal mobile">
+        <a href="/home.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+            <span class="nav-label">Dashboard</span>
+        </a>
+
+        <a href="/visao-geral-estoque.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span class="nav-label">Estoque</span>
+        </a>
+
+        <a href="/familia-listagem.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span class="nav-label">Cadastros</span>
+        </a>
+
+        <a href="/cadastro-produto.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span class="nav-label">Novo Produto</span>
+        </a>
+    </nav>
+
+    <script src="/js/base.js?v=4" type="module"></script>
+    <script src="/js/frente-caixa.js?v=4" type="module"></script>
 </body>
 </html>

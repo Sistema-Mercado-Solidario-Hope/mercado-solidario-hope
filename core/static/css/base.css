@@ -887,15 +887,24 @@ textarea:focus-visible {
 .sidebar-overlay {
     position: fixed;
     inset: 0;
-    z-index: 150;
+    z-index: 255;
 
-    display: none;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
 
     background-color: rgba(0, 0, 0, 0.4);
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
 }
 
 .sidebar-overlay.active {
-    display: block;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* ==================== BOTÃO FECHAR SIDEBAR ==================== */
@@ -1162,14 +1171,19 @@ textarea:focus-visible {
     }
 
     .sidebar {
-        z-index: 260;
-        transform: translateX(-100%);
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease;
+    z-index: 260;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+
+    transform: translateX(-100%) !important;
+
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease !important;
     }
 
     .sidebar.open {
-        transform: translateX(0);
+        transform: translateX(0) !important;
     }
 
     .sidebar-close-btn {

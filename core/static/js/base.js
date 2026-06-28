@@ -7,68 +7,85 @@ const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const toastContainer = document.getElementById('toastContainer');
 const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
-// ============ BOTÃO FECHAR PELO X (MOBILE) ============
-if (sidebarCloseBtn) {
-    sidebarCloseBtn.addEventListener('click', closeSidebar);
-}
+// ============ MENU LATERAL MOBILE ============
 
-// ============ BOTÃO FLUTUANTE (VOLTAR AO TOPO) ============
-const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-window.addEventListener('scroll', () => {
-    if (scrollToTopBtn) {
-        if (window.scrollY > 300) {
-            scrollToTopBtn.classList.add('visible');
-        } else {
-            scrollToTopBtn.classList.remove('visible');
-        }
-    }
-});
-if (scrollToTopBtn) {
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-
-// ============ MOBILE MENU TOGGLE ============
 function openSidebar() {
-    if (sidebar) sidebar.classList.add('open');
-    if (sidebarOverlay) sidebarOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    if (sidebarOverlay) sidebarOverlay.setAttribute('aria-hidden', 'false');
+    if (!sidebar || !sidebarOverlay) return;
+
+    sidebar.classList.add("open");
+    sidebarOverlay.classList.add("active");
+
+    sidebarOverlay.setAttribute("aria-hidden", "false");
+    mobileMenuBtn?.setAttribute("aria-expanded", "true");
+
+    document.body.style.overflow = "hidden";
 }
 
 function closeSidebar() {
-    if (sidebar) sidebar.classList.remove('open');
-    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-    if (sidebarOverlay) sidebarOverlay.setAttribute('aria-hidden', 'true');
+    if (!sidebar || !sidebarOverlay) return;
+
+    sidebar.classList.remove("open");
+    sidebarOverlay.classList.remove("active");
+
+    sidebarOverlay.setAttribute("aria-hidden", "true");
+    mobileMenuBtn?.setAttribute("aria-expanded", "false");
+
+    document.body.style.overflow = "";
 }
 
-if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-        if (sidebar && sidebar.classList.contains('open')) {
+function toggleSidebar(event) {
+    event?.preventDefault();
+    event?.stopImmediatePropagation();
+
+    if (sidebar?.classList.contains("open")) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+
+if (mobileMenuBtn && !mobileMenuBtn.dataset.menuBound) {
+    mobileMenuBtn.dataset.menuBound = "true";
+    mobileMenuBtn.addEventListener("click", toggleSidebar, true);
+}
+
+if (sidebarCloseBtn && !sidebarCloseBtn.dataset.menuBound) {
+    sidebarCloseBtn.dataset.menuBound = "true";
+
+    sidebarCloseBtn.addEventListener(
+        "click",
+        function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
             closeSidebar();
-        } else {
-            openSidebar();
-        }
-    });
+        },
+        true
+    );
 }
 
-if (sidebarOverlay) {
-    sidebarOverlay.addEventListener('click', closeSidebar);
+if (sidebarOverlay && !sidebarOverlay.dataset.menuBound) {
+    sidebarOverlay.dataset.menuBound = "true";
+    sidebarOverlay.addEventListener("click", closeSidebar, true);
 }
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
         closeSidebar();
     }
 });
 
-// Fechar sidebar ao clicar em qualquer link (mobile)
+window.addEventListener("resize", function () {
+    if (window.innerWidth > 900) {
+        closeSidebar();
+    }
+});
+
 if (sidebar) {
-    sidebar.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            if (window.innerWidth <= 900) closeSidebar();
+    sidebar.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+            if (window.innerWidth <= 900) {
+                closeSidebar();
+            }
         });
     });
 }
@@ -250,15 +267,16 @@ if (dropdownToggle && dropdownMenu) {
 }
 
 // ============ BARRA MOBILE BOTTOM ============
-document.querySelectorAll('.mobile-nav-item').forEach(item => {
-    item.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
-        const href = this.getAttribute('href');
-        if (href) {
-            window.location.href = href;
-        }
+document.querySelectorAll(".mobile-nav-item").forEach(function (item) {
+    item.addEventListener("click", function () {
+        document.querySelectorAll(".mobile-nav-item").forEach(function (navItem) {
+            navItem.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+        // Sem preventDefault:
+        // o navegador segue normalmente o href.
     });
 });
 
