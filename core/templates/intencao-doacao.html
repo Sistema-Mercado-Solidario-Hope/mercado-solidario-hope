@@ -64,6 +64,15 @@
                 <p class="poppins-regular text-main">Escolha os itens que deseja doar e informe a quantidade. Sua atitude faz a diferença!</p>
             </div>
 
+            <!-- Como funciona -->
+            <div class="info-alert-box poppins-regular" style="background: #F6F0FF; border: 1px solid #D0C2D7; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; color: #1A1323; display: flex; gap: 14px; align-items: flex-start; line-height: 1.5;">
+                <span style="font-size: 20px; line-height: 1; user-select: none;">💡</span>
+                <div>
+                    <strong class="poppins-semibold" style="display: block; margin-bottom: 4px; color: #5D2D8A;">Como funciona sua intenção de doação?</strong>
+                    A intenção de doação serve para agilizar o trabalho dos nossos voluntários na recepção dos itens. O registro gerado aqui <b>não insere os produtos diretamente no estoque</b>. Quando você realizar a entrega física dos produtos no <b>Mercado Hope</b>, um voluntário fará a conferência rápida dos itens e validará a intenção no sistema para que eles passem a constar no estoque ativo.
+                </div>
+            </div>
+
             <form id="formIntencao" class="intencao-form" novalidate>
                 <!-- Dados do doador -->
                 <div class="doador-section">
@@ -82,7 +91,16 @@
 
                 <!-- Lista de itens (preenchida via JS) -->
                 <div class="itens-section">
-                    <h3 class="poppins-semibold section-title">Itens que você deseja doar</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+                        <h3 class="poppins-semibold section-title" style="margin-bottom: 0;">Itens que você deseja doar</h3>
+                        <div class="vitrine-search" style="margin-bottom: 0;">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="#6E6875" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                            <input type="text" id="searchInput" class="poppins-regular" placeholder="Buscar produtos...">
+                        </div>
+                    </div>
                     <p class="poppins-regular helper-text">Os itens abaixo são os que precisamos no momento. Informe a quantidade de cada um.</p>
                     
                     <div id="listaItens" class="itens-grid">

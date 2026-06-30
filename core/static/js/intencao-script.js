@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     nome: p.nome,
                     unidade: p.unidade,
                     categoria: p.categoria,
-                    icone: getIconePorCategoria(p.categoria)
+                    icone: getIconePorCategoria(p.categoria),
+                    quantidade: p.quantidade,
+                    meta: p.meta || 0,
+                    quantidadeDoadora: 0
                 }));
                 renderizarItens();
             }
@@ -109,10 +112,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ==================== RENDERIZAÇÃO DOS ITENS ====================
-    function renderizarItens() {
+    function renderizarItens(termo = '') {
         listaItensContainer.innerHTML = '';
 
-        itensDisponiveis.forEach(item => {
+        const filtrados = itensDisponiveis.filter(item => {
+            return item.nome.toLowerCase().includes(termo) ||
+                   item.categoria.toLowerCase().includes(termo);
+        });
+
+        if (filtrados.length === 0) {
+            listaItensContainer.innerHTML = '<p class="poppins-regular" style="grid-column: 1/-1; text-align: center; padding: 24px; color: var(--text-muted);">Nenhum produto encontrado com este nome.</p>';
+            return;
+        }
+
+        filtrados.forEach(item => {
             const card = criarItemCard(item);
             listaItensContainer.appendChild(card);
         });
@@ -123,6 +136,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         cardDiv.className = 'item-card';
         cardDiv.dataset.itemId = item.id;
 
+        const achievedPct = item.meta > 0 ? Math.min(100, Math.round((item.quantidade / item.meta) * 100)) : 0;
+        let metaBadge = '';
+        if (item.meta > 0) {
+            if (achievedPct >= 100) {
+                metaBadge = `<span class="meta-badge-meta-atingida" style="font-size: 12px; background: #DEF7EC; color: #03543F; padding: 4px 10px; border-radius: 20px; font-weight: 600; white-space: nowrap; margin-left: auto;">100% da meta de arrecadação</span>`;
+            } else {
+                metaBadge = `<span class="meta-badge-deficit" style="font-size: 12px; background: #FDE8E8; color: #9B1C1C; padding: 4px 10px; border-radius: 20px; font-weight: 600; white-space: nowrap; margin-left: auto;">${achievedPct}% da meta de arrecadação</span>`;
+            }
+        }
+
         cardDiv.innerHTML = `
             <div class="item-info">
                 <div class="item-icon">${item.icone}</div>
@@ -130,12 +153,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <span class="item-nome poppins-semibold">${item.nome}</span>
                     <span class="item-categoria poppins-regular">${item.categoria}</span>
                 </div>
+                ${metaBadge}
             </div>
             <div class="item-quantidade">
                 <label for="qtd-${item.id}" class="poppins-medium">Qtd (${item.unidade || 'un'}):</label>
-                <input type="number" id="qtd-${item.id}" name="qtd-${item.id}" min="0" value="0" class="poppins-regular" placeholder="0">
+                <input type="number" id="qtd-${item.id}" name="qtd-${item.id}" min="0" value="${item.quantidadeDoadora || 0}" class="poppins-regular" placeholder="0">
             </div>
         `;
+
+        const input = cardDiv.querySelector('input');
+        input.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value) || 0;
+            item.quantidadeDoadora = val >= 0 ? val : 0;
+        });
 
         return cardDiv;
     }
@@ -300,8 +330,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         itensDisponiveis.forEach(item => {
-            const qtdInput = document.getElementById(`qtd-${item.id}`);
-            const quantidade = parseInt(qtdInput.value, 10);
+            const quantidade = item.quantidadeDoadora || 0;
             if (quantidade > 0) {
                 doacao.itens.push({
                     id: item.id,
@@ -330,9 +359,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 formIntencao.reset();
                 itensDisponiveis.forEach(item => {
-                    const input = document.getElementById(`qtd-${item.id}`);
-                    if (input) input.value = 0;
+                    item.quantidadeDoadora = 0;
                 });
+                renderizarItens();
+                const searchInp = document.getElementById('searchInput');
+                if (searchInp) searchInp.value = '';
                 limparErroLgpd();
             } else {
                 mostrarAviso(res.erro || res.data?.erro || 'Erro ao registrar intenção de doação.');
@@ -344,6 +375,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ==================== INICIALIZAÇÃO ====================
     await carregarCatalogo();
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase().trim();
+            renderizarItens(termo);
+        });
+    }
 
     // ==================== BOTÃO VOLTAR AO TOPO (FAB) ====================
     const fab = document.getElementById('scrollToTopBtn');
