@@ -339,7 +339,7 @@ function initSidebarDropdowns() {
             const container = link.closest('.dropdown-container');
             if (container) {
                 container.classList.add('open');
-                container.style.maxHeight = container.scrollHeight + 'px';
+                container.style.maxHeight = 'none';
                 
                 const triggerId = container.getAttribute('id');
                 const trigger = document.querySelector(`[aria-controls="${triggerId}"]`);

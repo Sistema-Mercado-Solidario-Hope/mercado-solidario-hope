@@ -80,3 +80,34 @@ class DeliveryTests(TestCase):
         # Stock should remain unchanged
         self.product.refresh_from_db()
         self.assertEqual(float(self.product.estoque_atual), 100.00)
+
+    def test_get_family_deliveries_history(self):
+        # 1. Create a delivery
+        payload = {
+            'beneficiario_id': self.family.id_familia,
+            'itens': [
+                {'produto_id': self.product.id_produto, 'quantidade': 10.00}
+            ]
+        }
+        res_post = self.client.post(
+            '/api/entregas/confirmar',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        self.assertEqual(res_post.status_code, 201)
+
+        # 2. Query history API
+        response = self.client.get(
+            f'/api/beneficiarios/{self.family.id_familia}/entregas',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertIn('entregas', data)
+        self.assertEqual(len(data['entregas']), 1)
+        self.assertEqual(data['entregas'][0]['operador'], self.operator.nome_completo)
+        self.assertEqual(len(data['entregas'][0]['itens']), 1)
+        self.assertEqual(data['entregas'][0]['itens'][0]['produto_nome'], self.product.nome_produto)
+        self.assertEqual(float(data['entregas'][0]['itens'][0]['quantidade']), 10.00)
+

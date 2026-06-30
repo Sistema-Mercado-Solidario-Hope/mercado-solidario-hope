@@ -150,6 +150,9 @@ def inserir_estoque_view(request):
 def doacao_manual_view(request):
     return render(request, 'doacao-manual.html')
 
+def historico_entregas_view(request):
+    return render(request, 'historico-entregas.html')
+
 def validar_intencoes_view(request):
     return render(request, 'validar-intencoes.html')
 
@@ -1502,5 +1505,36 @@ def api_categoria_detail(request, pk):
         return JsonResponse({'sucesso': True})
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+
+@csrf_exempt
+@api_auth_required
+def api_beneficiario_entregas(request, pk):
+    try:
+        family = BeneficiaryFamily.objects.get(pk=pk)
+    except BeneficiaryFamily.DoesNotExist:
+        return JsonResponse({'erro': 'Beneficiário não encontrado'}, status=404)
+
+    if request.method == 'GET':
+        deliveries = OutboundDelivery.objects.filter(id_familia=family).order_by('-data_entrega')
+        deliveries_list = []
+        for d in deliveries:
+            itens_query = DeliveryItem.objects.filter(id_entrega=d).select_related('id_produto')
+            itens_list = []
+            for item in itens_query:
+                itens_list.append({
+                    'produto_nome': item.id_produto.nome_produto if item.id_produto else 'Produto personalizado',
+                    'quantidade': float(item.quantidade),
+                    'unidade': item.id_produto.unidade_medida if item.id_produto else 'un'
+                })
+            deliveries_list.append({
+                'id': d.id_entrega,
+                'data': d.data_entrega.strftime('%d/%m/%Y %H:%M'),
+                'operador': d.id_usuario_operador.nome_completo if d.id_usuario_operador else 'Operador',
+                'itens': itens_list
+            })
+        return JsonResponse({'entregas': deliveries_list})
+    return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
 
 

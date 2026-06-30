@@ -1,0 +1,197 @@
+/* Histórico de Entregas Stylesheet — Mercado Solidário */
+
+
+
+/* Card layout */
+.card {
+    background-color: #FFFFFF;
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(138, 79, 125, 0.03);
+    border: 1px solid var(--border-color);
+}
+
+/* Busca Section */
+.busca-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.busca-input {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    outline: none;
+    font-size: 15px;
+    color: var(--text-dark);
+    background-color: #FAF8FC;
+    transition: all 0.2s ease;
+}
+
+.busca-input:focus {
+    border-color: var(--purple-primary);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(138, 79, 125, 0.1);
+}
+
+.busca-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--text-muted);
+}
+
+/* Autocomplete suggestions */
+.busca-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 12px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid #FAF8FC;
+    transition: background-color 0.2s ease;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background-color: #F6EAF9;
+}
+
+.suggestion-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.suggestion-details {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Status Badge */
+.badge-status {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.status-ativo {
+    background-color: #DEF7EC;
+    color: #03543F;
+}
+
+.status-inativo {
+    background-color: #FDE8E8;
+    color: #9B1C1C;
+}
+
+/* Timeline Cards */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.delivery-card {
+    background-color: #FAF8FC;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.delivery-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.delivery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.delivery-title {
+    font-size: 16px;
+    color: var(--purple-primary);
+    margin: 0;
+}
+
+.delivery-date {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.delivery-meta {
+    font-size: 13px;
+    color: var(--text-main);
+    margin-bottom: 16px;
+}
+
+/* Items List inside Delivery */
+.delivery-items-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.delivery-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.delivery-item-tag {
+    background-color: #FFFFFF;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+
+.delivery-item-name {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.delivery-item-qty {
+    font-weight: 700;
+    color: var(--purple-primary);
+    background-color: #FDF9FF;
+    border: 1px solid #F0E6F2;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.hidden {
+    display: none !important;
+}

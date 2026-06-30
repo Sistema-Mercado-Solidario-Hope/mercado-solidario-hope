@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Solidário – Histórico de Entregas</title>
+    <!-- Fontes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css?v={% now 'U' %}">
+    <link rel="stylesheet" href="/css/historico-entregas.css?v={% now 'U' %}">
+</head>
+<body>
+
+    <!-- OVERLAY MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- SIDEBAR -->
+    {% include 'sidebar.html' %}
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content" id="mainContent">
+        <!-- TOPBAR -->
+        {% include 'topbar.html' with page_title='Histórico de Entregas' %}
+
+        <!-- CONTAINER DA PÁGINA -->
+        <div class="page-container">
+            <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+            <!-- Busca Beneficiário -->
+            <div class="card busca-section" style="margin-bottom: 24px; position: relative;">
+                <h3 class="poppins-semibold card-title">Selecione uma Família</h3>
+                <div class="busca-wrap">
+                    <span class="busca-icon">🔍</span>
+                    <input type="text" id="busca-beneficiario" class="busca-input poppins-medium" placeholder="Buscar por Nome, NIS ou CPF da família..." autocomplete="off">
+                    <div id="busca-suggestions" class="busca-suggestions hidden"></div>
+                </div>
+            </div>
+
+            <!-- Resumo e Estatísticas da Família -->
+            <div id="family-info-card" class="card info-familia-card hidden" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h2 id="family-name" class="poppins-bold" style="font-size: 20px; color: var(--text-dark); margin: 0;">Família Silva</h2>
+                            <span id="family-status" class="badge-status status-ativo">Ativo</span>
+                        </div>
+                        <p class="poppins-regular" style="margin-top: 8px; color: var(--text-muted); font-size: 13px;">
+                            <strong>Responsável:</strong> <span id="family-responsible">—</span> | 
+                            <strong>CPF/NIS:</strong> <span id="family-cpf-nis">—</span> | 
+                            <strong>Telefone:</strong> <span id="family-phone">—</span>
+                        </p>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="stats-row" style="display: flex; gap: 16px;">
+                        <div class="stat-box" style="background: #FDF9FF; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 18px; text-align: center; min-width: 120px;">
+                            <span class="poppins-regular" style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Total Entregas</span>
+                            <strong id="total-deliveries-count" class="poppins-bold" style="font-size: 20px; color: var(--purple-primary);">0</strong>
+                        </div>
+                        <div class="stat-box" style="background: #FDF9FF; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 18px; text-align: center; min-width: 120px;">
+                            <span class="poppins-regular" style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Total Itens Recebidos</span>
+                            <strong id="total-items-count" class="poppins-bold" style="font-size: 20px; color: var(--purple-primary);">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline de Entregas -->
+            <div class="card timeline-card">
+                <h3 class="poppins-semibold card-title" style="margin-bottom: 20px;">Histórico de Recebimentos</h3>
+                
+                <div id="timeline-placeholder" class="timeline-placeholder poppins-regular" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    Selecione uma família para carregar o histórico de entregas.
+                </div>
+
+                <div id="timeline-container" class="timeline-container hidden">
+                    <!-- Cards de entregas gerados dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="/js/base.js?v={% now 'U' %}" type="module" defer></script>
+    <script src="/js/historico-entregas.js?v={% now 'U' %}" type="module"></script>
+</body>
+</html>

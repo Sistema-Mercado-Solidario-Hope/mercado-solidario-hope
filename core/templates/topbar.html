@@ -1,0 +1,50 @@
+<!-- ============================================================
+TOPBAR
+============================================================ -->
+<header class="topbar" id="topbar">
+
+    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="18" x2="20" y2="18" />
+        </svg>
+    </button>
+
+    <div class="topbar-left">
+        <h2 class="poppins-bold topbar-title" id="pageTitle">{{ page_title }}</h2>
+    </div>
+
+    <div class="topbar-right">
+        <!-- Notificações -->
+        <div class="notification-wrapper">
+            <button type="button" class="icon-notification-btn" id="notificationBtn" aria-label="Notificações" aria-haspopup="true" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                <span class="notification-dot hidden" aria-label="Notificações não lidas"></span>
+            </button>
+            <div class="notification-dropdown" id="notificationDropdown" role="menu">
+                <div class="notification-dropdown-header poppins-semibold">
+                    <span>Notificações</span>
+                    <button type="button" class="mark-all-read poppins-medium" id="markAllReadBtn">Marcar todas como lidas</button>
+                </div>
+                <div class="notification-list" id="notificationList">
+                    <div class="poppins-regular" style="padding:20px;text-align:center;color:var(--text-muted);">
+                        Nenhuma notificação no momento.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-profile-menu" style="display: flex; align-items: center; gap: 12px;">
+            <div class="user-info" style="display: flex; flex-direction: column; text-align: right;">
+            </div>
+            <a href="/perfil.html" class="profile-avatar" aria-label="Abrir perfil">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Foto de perfil" />
+            </a>
+        </div>
+    </div>
+
+</header>
