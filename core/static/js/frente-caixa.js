@@ -16,6 +16,7 @@ const state = {
     cart: {},
     products: [],
     beneficiaries: [],
+    allProducts: {},
 };
 
 const MOBILE_BREAKPOINT = 880;
@@ -52,48 +53,57 @@ async function carregarProdutos(categoria = '') {
         const data = await Api.get(endpoint);
 
         if (data && data.produtos) {
-            state.products = data.produtos.map(p => ({
-                id: p.id,
-                nome: p.nome || p.name || 'Sem nome',
-                descricao: p.descricao || p.description || '',
-                categoria: p.categoria || p.category || '',
-                unidadeMedida:
-                    p.unidadeMedida ||
-                    p.unidade ||
-                    p.unidade_medida ||
-                    '',
-                estoqueAtual:
-                    p.estoqueAtual ??
-                    p.quantityEstoque ??
-                    p.quantity ??
-                    0,
-                estoqueCritico:
-                    Boolean(p.estoqueCritico) ||
-                    (
-                        typeof p.quantityEstoque === 'number' &&
-                        p.quantityEstoque <= 12
-                    ),
-                esgotado:
-                    Boolean(p.esgotado) ||
-                    (
+            const loadedProducts = data.produtos.map(p => {
+                const hasPhoto = p.foto && p.foto !== 'None' && !p.foto.endsWith('/None') && !p.foto.endsWith('/null') && p.foto.trim() !== '';
+                return {
+                    id: p.id,
+                    nome: p.nome || p.name || 'Sem nome',
+                    descricao: p.descricao || p.description || '',
+                    categoria: p.categoria || p.category || '',
+                    unidadeMedida:
+                        p.unidadeMedida ||
+                        p.unidade ||
+                        p.unidade_medida ||
+                        '',
+                    estoqueAtual:
+                        p.estoqueAtual ??
+                        p.quantityEstoque ??
+                        p.quantity ??
+                        0,
+                    estoqueCritico:
+                        Boolean(p.estoqueCritico) ||
                         (
-                            p.quantityEstoque ??
-                            p.quantity ??
-                            p.estoqueAtual
-                        ) === 0
-                    ),
-                icone:
-                    p.icone ||
-                    (
-                        p.foto
-                            ? `<img
-                                src="${p.foto}"
-                                alt=""
-                                style="width:28px;height:28px;border-radius:6px;object-fit:cover"
-                               >`
-                            : '📦'
-                    ),
-            }));
+                            typeof p.quantityEstoque === 'number' &&
+                            p.quantityEstoque <= 12
+                        ),
+                    esgotado:
+                        Boolean(p.esgotado) ||
+                        (
+                            (
+                                p.quantityEstoque ??
+                                p.quantity ??
+                                p.estoqueAtual
+                            ) === 0
+                        ),
+                    icone:
+                        p.icone ||
+                        (
+                            hasPhoto
+                                ? `<img
+                                    src="${p.foto}"
+                                    alt=""
+                                    style="width:28px;height:28px;border-radius:6px;object-fit:cover"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                                   ><span class="fallback-icon" style="display:none;">📦</span>`
+                                : '📦'
+                        ),
+                };
+            });
+
+            loadedProducts.forEach(prod => {
+                state.allProducts[prod.id] = prod;
+            });
+            state.products = loadedProducts;
 
             renderizarDesk();
             renderizarMob();
@@ -133,97 +143,34 @@ function renderizarDesk() {
         const selecionado = qty > 0;
 
         const card = document.createElement('div');
-
         card.className =
             `produto-card` +
             `${selecionado ? ' selecionado' : ''}` +
             `${esgotado ? ' esgotado' : ''}`;
 
+        const dispLabel = p.estoqueAtual === 1 ? 'disponível' : 'disponíveis';
+
+        const stockBlock = esgotado
+            ? `<span class="prod-esgotado-tag">Esgotado</span>`
+            : `<div class="prod-stock-row">
+                <span class="prod-stock-num">${p.estoqueAtual}</span>
+                <span class="prod-stock-unit">${p.unidadeMedida || 'un'}</span>
+               </div>
+               <div class="prod-stock-label">${dispLabel}</div>`;
+
         card.innerHTML = `
-            <div>
-                <div
-                    style="
-                        display:flex;
-                        justify-content:space-between;
-                        align-items:flex-start;
-                        margin-bottom:10px;
-                    "
-                >
-                    <span style="font-size:22px">
-                        ${p.icone || '📦'}
-                    </span>
-
-                    <span
-                        class="prod-stock-top"
-                        style="
-                            color:
-                            ${esgotado
-                                ? 'var(--vermelho)'
-                                : 'var(--cinza-ph)'
-                            };
-                        "
-                    >
-                        ${
-                            esgotado
-                                ? 'ESGOTADO'
-                                : `${p.estoqueAtual} ${p.unidadeMedida || ''}`
-                        }
-                    </span>
-                </div>
-
-                <div class="produto-nome">
-                    ${p.nome}
-                </div>
-
-                <div class="produto-sub">
-                    ${p.descricao || ''}
-                </div>
-
-                ${
-                    critico
-                        ? `
-                            <div
-                                style="
-                                    font-size:11px;
-                                    color:var(--vermelho);
-                                    font-weight:700;
-                                    margin-top:4px;
-                                "
-                            >
-                                Estoque Crítico
-                            </div>
-                        `
-                        : ''
-                }
+            <div class="prod-header">
+                <span class="prod-icon">${p.icone || '📦'}</span>
             </div>
 
+            <div class="produto-nome">${p.nome}</div>
+
+            ${stockBlock}
+
             <div class="qty-ctrl">
-                <button
-                    type="button"
-                    class="qty-btn"
-                    data-id="${p.id}"
-                    data-action="dec"
-                    ${esgotado ? 'disabled' : ''}
-                >
-                    −
-                </button>
-
-                <span
-                    class="qty-val"
-                    id="qty-desk-${p.id}"
-                >
-                    ${qty}
-                </span>
-
-                <button
-                    type="button"
-                    class="qty-btn"
-                    data-id="${p.id}"
-                    data-action="inc"
-                    ${esgotado ? 'disabled' : ''}
-                >
-                    +
-                </button>
+                <button type="button" class="qty-btn" data-id="${p.id}" data-action="dec" ${esgotado ? 'disabled' : ''}>−</button>
+                <span class="qty-val" id="qty-desk-${p.id}">${qty}</span>
+                <button type="button" class="qty-btn" data-id="${p.id}" data-action="inc" ${esgotado ? 'disabled' : ''}>+</button>
             </div>
         `;
 
@@ -376,7 +323,7 @@ function atualizarQty(id, delta) {
 function obterItensCarrinho() {
     return Object.entries(state.cart)
         .map(([id, qty]) => {
-            const produto = state.products.find(
+            const produto = (state.allProducts && state.allProducts[id]) || state.products.find(
                 p => String(p.id) === String(id)
             );
 
@@ -447,7 +394,8 @@ function atualizarPainelDireito() {
         0
     );
 
-    const percentual = Math.min(100, quantidadeTotal * 20);
+    const limit = (state.beneficiary && state.beneficiary.cota_limite) ? state.beneficiary.cota_limite : 15;
+    const percentual = Math.min(100, Math.round((quantidadeTotal / limit) * 100));
 
     if (cotaPct) {
         cotaPct.textContent = `${percentual}%`;
@@ -583,6 +531,7 @@ async function carregarBeneficiario(id) {
                 data.situacao ||
                 'Elegível';
         }
+        atualizarPainelDireito();
     } catch (error) {
         console.error('Erro ao carregar beneficiário:', error);
     }
@@ -629,20 +578,63 @@ function configurarTabsMobile() {
 }
 
 async function confirmarEntrega() {
-    if (!Object.keys(state.cart).length) {
+    if (!state.beneficiary) {
+        toast('erro', 'Selecione uma família antes de confirmar a entrega.');
+        return;
+    }
+    const cartKeys = Object.keys(state.cart);
+    if (!cartKeys.length) {
         toast('erro', 'Selecione ao menos um item.');
         return;
     }
 
-    state.cart = {};
+    const itens = cartKeys.map(id => ({
+        produto_id: parseInt(id, 10),
+        quantidade: state.cart[id]
+    })).filter(item => item.quantidade > 0);
 
-    renderizarDesk();
-    renderizarMob();
-    atualizarPainelDireito();
-    atualizarFooterMob();
-    fecharBottomSheet();
+    if (!itens.length) {
+        toast('erro', 'Selecione ao menos um item.');
+        return;
+    }
 
-    window.location.href = '/sucesso.html';
+    const payload = {
+        beneficiario_id: state.beneficiary.id,
+        itens: itens
+    };
+
+    try {
+        const res = await Api.post('/api/entregas/confirmar', payload);
+        if (res && (res.status === 201 || !res.erro)) {
+            // Save last delivery details to sessionStorage
+            const dynamicItens = itens.map(it => {
+                const prod = (state.allProducts && state.allProducts[it.produto_id]);
+                return {
+                    nome: prod ? prod.nome : 'Produto',
+                    quantidade: it.quantidade,
+                    unidade: prod ? prod.unidadeMedida : 'un'
+                };
+            });
+            sessionStorage.setItem('last_delivery', JSON.stringify({
+                id: (res.entrega && res.entrega.id) ? res.entrega.id : 'N/A',
+                data: (res.entrega && res.entrega.data) ? res.entrega.data : new Date().toISOString(),
+                beneficiario: (state.beneficiary && (state.beneficiary.nome || state.beneficiary.nomeFamilia)) ? (state.beneficiary.nome || state.beneficiary.nomeFamilia) : 'Beneficiário',
+                itens: dynamicItens
+            }));
+
+            state.cart = {};
+            renderizarDesk();
+            renderizarMob();
+            atualizarPainelDireito();
+            atualizarFooterMob();
+            fecharBottomSheet();
+            window.location.href = '/sucesso.html';
+        } else {
+            toast('erro', res.erro || res.data?.erro || 'Erro ao confirmar entrega.');
+        }
+    } catch (err) {
+        toast('erro', 'Erro de conexão ao confirmar entrega.');
+    }
 }
 
 function bindMobileControls() {
@@ -728,18 +720,84 @@ document.addEventListener('click', event => {
     }
 });
 
+function configurarBuscaBeneficiario() {
+    const input = document.getElementById('busca-beneficiario');
+    const suggestionsContainer = document.getElementById('busca-suggestions');
+    if (!input || !suggestionsContainer) return;
+
+    let timeout = null;
+
+    input.addEventListener('input', () => {
+        clearTimeout(timeout);
+        const query = input.value.trim();
+        if (!query) {
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.classList.add('hidden');
+            return;
+        }
+
+        timeout = setTimeout(async () => {
+            try {
+                const data = await Api.get(`/api/beneficiarios/busca?q=${encodeURIComponent(query)}`);
+                if (data && data.beneficiarios) {
+                    const activeOnly = data.beneficiarios.filter(b => b.status === 'ACTIVE' || b.status_pt === 'ativo');
+                    if (activeOnly.length === 0) {
+                        suggestionsContainer.innerHTML = '<div class="busca-suggestion-item">Nenhuma família elegível encontrada</div>';
+                    } else {
+                        suggestionsContainer.innerHTML = '';
+                        activeOnly.forEach(b => {
+                            const div = document.createElement('div');
+                            div.className = 'busca-suggestion-item';
+                            div.textContent = `${b.nome} (${b.responsavel}) - CPF: ${b.cpf || '—'}`;
+                            div.addEventListener('click', () => {
+                                carregarBeneficiario(b.id);
+                                input.value = b.nome;
+                                suggestionsContainer.innerHTML = '';
+                                suggestionsContainer.classList.add('hidden');
+                            });
+                            suggestionsContainer.appendChild(div);
+                        });
+                    }
+                    suggestionsContainer.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error('Erro ao buscar beneficiários:', err);
+            }
+        }, 300);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.classList.add('hidden');
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (!verificarSessao()) return;
 
     carregarUsuario();
 
     await carregarProdutos();
-    await carregarBeneficiario('ben-1');
+    
+    try {
+        const initialList = await Api.get('/api/beneficiarios');
+        if (initialList && initialList.beneficiarios && initialList.beneficiarios.length > 0) {
+            const firstActive = initialList.beneficiarios.find(b => b.status === 'ACTIVE' || b.status_pt === 'ativo');
+            if (firstActive) {
+                await carregarBeneficiario(firstActive.id);
+            }
+        }
+    } catch (e) {
+        console.error('Erro ao carregar beneficiário inicial:', e);
+    }
 
     atualizarPainelDireito();
     atualizarFooterMob();
 
     configurarFiltros();
+    configurarBuscaBeneficiario();
     sincronizarInterfaceMobile();
 
     window.addEventListener(
@@ -761,14 +819,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             document
                 .getElementById('btn-finalizar-entrega')
                 ?.click();
-        }
-
-        if (event.key === 'F1') {
-            event.preventDefault();
-
-            document
-                .getElementById('busca-beneficiario')
-                ?.focus();
         }
     });
 });

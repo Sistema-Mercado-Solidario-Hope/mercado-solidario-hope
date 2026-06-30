@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.innerHTML = `
                 <div class="item-info">
                     <span style="font-size:24px">${item.icone}</span>
-                    <span class="poppins-semibold">${item.nome} (${item.unidade})</span>
+                    <span class="poppins-semibold">${item.nome}</span>
                 </div>
                 <div class="item-quantidade">
-                    <label class="poppins-medium">Qtd:</label>
+                    <label class="poppins-medium">Qtd (${item.unidade}):</label>
                     <input type="number" min="0" step="any" value="0" class="form-input qtd-item" style="width:80px" data-id="${item.id}">
                 </div>
             `;

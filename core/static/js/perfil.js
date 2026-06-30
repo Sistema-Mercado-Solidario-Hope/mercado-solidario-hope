@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function clearFieldError(field) {
+        if (!field) return;
         field.classList.remove('input-error');
         const existing = field.parentNode.querySelector('.field-error');
         if (existing) existing.remove();
@@ -37,9 +38,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('telefone').value = usuario.telefone || '';
                 document.getElementById('perfilNome').textContent = usuario.nome_completo || 'Usuário';
                 document.getElementById('perfilCargo').textContent = usuario.cargo === 'admin' ? 'Administrador' : 'Operador';
-                
-                document.getElementById('perfilAvatar').src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
-                
                 const nomeTopbar = document.querySelector('.user-nome-label');
                 if (nomeTopbar) nomeTopbar.textContent = usuario.nome_completo;
             } else {
@@ -62,29 +60,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     telefoneInput.addEventListener('input', (e) => {
         e.target.value = aplicarMascaraTelefone(e.target.value);
-    });
-
-    // ==================== UPLOAD DE AVATAR (MOCK FRONTEND ONLY) ====================
-    const fileInput = document.getElementById('uploadAvatar');
-    const avatarImg = document.getElementById('perfilAvatar');
-    const avatarWrapper = document.querySelector('.avatar-upload-wrapper');
-
-    avatarWrapper.addEventListener('click', () => fileInput.click());
-
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length) {
-            const file = fileInput.files[0];
-            if (!file.type.startsWith('image/')) {
-                showToast('Formato de imagem inválido.', 'error');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                avatarImg.src = e.target.result;
-                showToast('Foto de perfil atualizada!', 'success');
-            };
-            reader.readAsDataURL(file);
-        }
     });
 
     // ==================== FORMULÁRIO DADOS PESSOAIS ====================

@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nomeInput = document.getElementById('nomeProduto');
     const categoriaSelect = document.getElementById('categoria');
     const unidadeSelect = document.getElementById('unidade');
+    const estoqueAtualInput = document.getElementById('estoqueAtual');
     const estoqueMinInput = document.getElementById('estoqueMinimo');
     const estoqueMaxInput = document.getElementById('estoqueMaximo');
     const metaInput = document.getElementById('metaArrecadacao');
@@ -38,13 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Limpeza de erros ao digitar/selecionar
     function clearFieldError(field) {
+        if (!field) return;
         field.classList.remove('input-error');
         const existing = field.parentNode.querySelector('.field-error');
         if (existing) existing.remove();
     }
 
     function clearAllErrors() {
-        [nomeInput, categoriaSelect, unidadeSelect, estoqueMinInput, estoqueMaxInput, metaInput].forEach(clearFieldError);
+        [nomeInput, categoriaSelect, unidadeSelect, estoqueAtualInput, estoqueMinInput, estoqueMaxInput, metaInput].forEach(clearFieldError);
         dropZone.classList.remove('input-error'); // limpa erro da imagem
         const lgpdError = document.querySelector('.lgpd-error');
         if (lgpdError) lgpdError.classList.remove('lgpd-error');
@@ -118,16 +120,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==================== LIMPEZA DE ERROS AO DIGITAR/SELECIONAR ====================
-    [nomeInput, estoqueMinInput, estoqueMaxInput, metaInput].forEach(input => {
+    [nomeInput, estoqueAtualInput, estoqueMinInput, estoqueMaxInput, metaInput].forEach(input => {
         input.addEventListener('input', () => clearFieldError(input));
     });
     [categoriaSelect, unidadeSelect].forEach(select => {
         select.addEventListener('change', () => clearFieldError(select));
     });
-    lgpdCheckbox.addEventListener('change', () => {
-        const container = lgpdCheckbox.closest('.compliance-label');
-        if (container) container.classList.remove('lgpd-error');
-    });
+    async function carregarCategorias() {
+        try {
+            const data = await Api.get('/api/estoque/categorias');
+            if (data && data.categorias) {
+                const currentValue = categoriaSelect.value;
+                categoriaSelect.innerHTML = '<option value="">Selecione a categoria</option>';
+                data.categorias.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.nome;
+                    opt.textContent = cat.nome;
+                    categoriaSelect.appendChild(opt);
+                });
+                if (currentValue) {
+                    categoriaSelect.value = currentValue;
+                }
+            }
+        } catch (e) {
+            console.error('Erro ao carregar categorias:', e);
+        }
+    }
+
+    carregarCategorias();
+
+    if (lgpdCheckbox) {
+        lgpdCheckbox.addEventListener('change', () => {
+            const container = lgpdCheckbox.closest('.compliance-label');
+            if (container) container.classList.remove('lgpd-error');
+        });
+    }
 
     // ==================== RESET DO FORMULÁRIO ====================
     btnReset.addEventListener('click', () => {
@@ -168,10 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = false;
         }
 
-        // 4. Estoque mínimo e máximo
+        // 4. Estoque atual, mínimo e máximo
+        let atual = parseInt(estoqueAtualInput.value, 10);
         let min = parseInt(estoqueMinInput.value, 10);
         let max = parseInt(estoqueMaxInput.value, 10);
 
+        if (isNaN(atual) || atual < 0) {
+            showFieldError(estoqueAtualInput, 'Informe uma quantidade atual válida (≥ 0).');
+            isValid = false;
+        }
         if (isNaN(min) || min < 0) {
             showFieldError(estoqueMinInput, 'Informe um valor mínimo válido (≥ 0).');
             isValid = false;
@@ -185,18 +217,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showFieldError(estoqueMaxInput, 'Máximo não pode ser menor que o mínimo.');
             isValid = false;
         }
+        if (!isNaN(atual) && !isNaN(max) && atual > max) {
+            showFieldError(estoqueAtualInput, 'A quantidade atual não pode ser maior que o estoque máximo.');
+            isValid = false;
+        }
 
         // 5. Meta de arrecadação
         let meta = parseInt(metaInput.value, 10);
         if (isNaN(meta) || meta < 0) {
             showFieldError(metaInput, 'Informe uma meta de arrecadação válida (≥ 0).');
-            isValid = false;
-        }
-
-        // 5. Imagem do produto (obrigatória)
-        if (!fileInput.files.length || !previewImage.src) {
-            dropZone.classList.add('input-error');
-            showToast('A imagem do produto é obrigatória.', 'error');
             isValid = false;
         }
 
@@ -217,11 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
             nome: nome,
             categoria: categoriaSelect.value,
             unidade: unidadeSelect.value,
-            quantidade: 0,
+            quantidade: atual,
             estoqueMinimo: min,
             estoque_maximo: max,
             meta: meta,
-            imagem_url: previewImage.src
+            imagem_url: previewImage.src || null
         };
 
         try {

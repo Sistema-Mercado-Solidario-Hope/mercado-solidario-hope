@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import random
+import re
 import string
 import uuid
 from decimal import Decimal
@@ -30,6 +31,41 @@ from core.models import (
 )
 
 signer = Signer()
+
+def validar_cpf(cpf):
+    if not cpf:
+        return False
+    cpf = re.sub(r'\D', '', str(cpf))
+    if len(cpf) != 11 or cpf == cpf[0] * 11:
+        return False
+
+    # 1st digit check
+    soma = sum(int(cpf[i]) * (10 - i) for i in range(9))
+    resto = 11 - (soma % 11)
+    digito1 = 0 if resto in [10, 11] else resto
+    if int(cpf[9]) != digito1:
+        return False
+
+    # 2nd digit check
+    soma = sum(int(cpf[i]) * (11 - i) for i in range(10))
+    resto = 11 - (soma % 11)
+    digito2 = 0 if resto in [10, 11] else resto
+    return int(cpf[10]) == digito2
+
+def validar_nis(nis):
+    if not nis:
+        return False
+    nis = re.sub(r'\D', '', str(nis))
+    if len(nis) != 11 or nis == "00000000000":
+        return False
+
+    multiplicadores = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+    soma = sum(int(nis[i]) * multiplicadores[i] for i in range(10))
+    resto = soma % 11
+    digito = 11 - resto
+    if digito in [10, 11]:
+        digito = 0
+    return int(nis[10]) == digito
 
 # Helper functions for custom Token Authentication
 def generate_token(user):
@@ -129,9 +165,6 @@ def cadastro_produto_view(request):
 def configuracoes_view(request):
     return render(request, 'configuracoes.html')
 
-def admin_view(request):
-    return render(request, 'admin.html')
-
 def metas_produtos_view(request):
     return render(request, 'metas-produtos.html')
 
@@ -177,7 +210,7 @@ def api_login(request):
                 }
             })
 
-        return JsonResponse({'erro': 'Credenciais inválidas. Use admin@mercadosolidario.com / admin'}, status=401)
+        return JsonResponse({'erro': 'Credenciais inválidas.'}, status=401)
     except Exception as e:
         return JsonResponse({'erro': str(e)}, status=500)
 
@@ -460,9 +493,10 @@ def api_beneficiarios(request):
                 'qtdIntegrantes': f.numero_membros,
                 'status': 'ACTIVE' if f.status == 'ativo' else 'INACTIVE',
                 'status_pt': f.status,
-                'cpf_nis': f.cpf_nis or '',
-                'cpf': f.cpf_nis or '',
-                'nis': f.cpf_nis or '',
+                'cpf_nis': f.cpf or '',
+                'cpf': f.cpf or '',
+                'nis': f.nis or '',
+                'cota_limite': f.cota_limite,
                 'lastDeliveryDays': last_delivery_days,
                 'ultimaParticipacao': f.data_ultima_entrega.strftime('%Y-%m-%d') if f.data_ultima_entrega else '—'
             })
@@ -473,10 +507,12 @@ def api_beneficiarios(request):
             data = json.loads(request.body)
             nome_familia = data.get('nome') or data.get('nomeFamilia')
             responsavel_nome = data.get('responsavel') or data.get('responsavel_nome')
-            cpf_nis = data.get('cpf_nis') or data.get('nis') or data.get('cpf')
+            cpf = data.get('cpf') or data.get('cpf_nis')
+            nis = data.get('nis')
             telefone = data.get('telefone')
             endereco = data.get('endereco')
             numero_membros = data.get('numMembros') or data.get('members') or 1
+            cota_limite = data.get('cota_limite') or data.get('cotaLimite') or 15
             status = data.get('status') or 'ativo'
             lgpd_accept = data.get('lgpd_accept') or data.get('lgpdConsent') or False
 
@@ -484,24 +520,37 @@ def api_beneficiarios(request):
             if nome_familia and not nome_familia.lower().startswith('família'):
                 nome_familia = f"Família {nome_familia}"
 
-            if not nome_familia or not responsavel_nome or not telefone or not cpf_nis or not endereco:
-                return JsonResponse({'erro': 'Nome da família, responsável, telefone, CPF/NIS e endereço são obrigatórios'}, status=400)
+            if not nome_familia or not responsavel_nome or not telefone or not cpf or not endereco:
+                return JsonResponse({'erro': 'Nome da família, responsável, telefone, CPF e endereço são obrigatórios'}, status=400)
 
             # Verifica LGPD
             if not lgpd_accept:
                 return JsonResponse({'erro': 'Aceite da política de proteção de dados (LGPD) é obrigatório'}, status=400)
 
-            if cpf_nis and BeneficiaryFamily.objects.filter(cpf_nis=cpf_nis).exists():
-                return JsonResponse({'erro': 'CPF/NIS já cadastrado para outra família'}, status=409)
+            # Validar CPF
+            if not validar_cpf(cpf):
+                return JsonResponse({'erro': 'CPF inválido.'}, status=400)
+
+            # Validar NIS se informado
+            if nis and not validar_nis(nis):
+                return JsonResponse({'erro': 'NIS inválido.'}, status=400)
+
+            if cpf and BeneficiaryFamily.objects.filter(cpf=cpf.strip()).exists():
+                return JsonResponse({'erro': 'CPF já cadastrado para outra família'}, status=409)
+
+            if nis and BeneficiaryFamily.objects.filter(nis=nis.strip()).exists():
+                return JsonResponse({'erro': 'NIS já cadastrado para outra família'}, status=409)
 
             f = BeneficiaryFamily.objects.create(
                 nome_familia=nome_familia.strip(),
                 responsavel_nome=responsavel_nome.strip(),
-                cpf_nis=cpf_nis.strip() if cpf_nis else None,
+                cpf=cpf.strip() if cpf else None,
+                nis=nis.strip() if nis else None,
                 telefone=telefone.strip(),
                 endereco=endereco.strip() if endereco else None,
                 numero_membros=int(numero_membros),
                 status=status.lower(),
+                cota_limite=int(cota_limite),
                 lgpd_accept=True
             )
 
@@ -526,10 +575,11 @@ def api_beneficiarios_busca(request):
 
     query = BeneficiaryFamily.objects.all()
     if q:
-        # Busca por nome da família, CPF/NIS, ou responsável
+        # Busca por nome da família, CPF, NIS, ou responsável
         query = query.filter(
             Q(nome_familia__icontains=q) |
-            Q(cpf_nis__icontains=q) |
+            Q(cpf__icontains=q) |
+            Q(nis__icontains=q) |
             Q(responsavel_nome__icontains=q)
         )
 
@@ -553,9 +603,9 @@ def api_beneficiarios_busca(request):
             'qtdIntegrantes': f.numero_membros,
             'status': 'ACTIVE' if f.status == 'ativo' else 'INACTIVE',
             'status_pt': f.status,
-            'cpf_nis': f.cpf_nis or '',
-            'cpf': f.cpf_nis or '',
-            'nis': f.cpf_nis or '',
+            'cpf_nis': f.cpf or '',
+            'cpf': f.cpf or '',
+            'nis': f.nis or '',
             'lastDeliveryDays': last_delivery_days,
             'ultimaParticipacao': f.data_ultima_entrega.strftime('%Y-%m-%d') if f.data_ultima_entrega else '—'
         })
@@ -588,9 +638,10 @@ def api_beneficiario_detail(request, pk):
             'qtdIntegrantes': f.numero_membros,
             'status': 'ACTIVE' if f.status == 'ativo' else 'INACTIVE',
             'status_pt': f.status,
-            'cpf_nis': f.cpf_nis or '',
-            'cpf': f.cpf_nis or '',
-            'nis': f.cpf_nis or '',
+            'cpf_nis': f.cpf or '',
+            'cpf': f.cpf or '',
+            'nis': f.nis or '',
+            'cota_limite': f.cota_limite,
             'lastDeliveryDays': last_delivery_days,
             'elegivel': f.status == 'ativo',
             'cotaPercent': 0  # mock/calculated
@@ -601,7 +652,6 @@ def api_beneficiario_detail(request, pk):
             data = json.loads(request.body)
             nome_familia = data.get('nome') or data.get('nomeFamilia')
             responsavel_nome = data.get('responsavel') or data.get('responsavel_nome')
-            cpf_nis = data.get('cpf_nis') or data.get('nis') or data.get('cpf')
             telefone = data.get('telefone')
             endereco = data.get('endereco')
             numero_membros = data.get('numMembros') or data.get('members')
@@ -617,13 +667,25 @@ def api_beneficiario_detail(request, pk):
                 if not responsavel_nome or not responsavel_nome.strip():
                     return JsonResponse({'erro': 'Responsável é obrigatório'}, status=400)
                 f.responsavel_nome = responsavel_nome.strip()
-            if 'cpf_nis' in data or 'nis' in data or 'cpf' in data:
-                if not cpf_nis or not cpf_nis.strip():
-                    return JsonResponse({'erro': 'CPF/NIS é obrigatório'}, status=400)
-                # Verifica duplicidade
-                if BeneficiaryFamily.objects.filter(cpf_nis=cpf_nis.strip()).exclude(pk=f.pk).exists():
-                    return JsonResponse({'erro': 'CPF/NIS já cadastrado para outra família'}, status=409)
-                f.cpf_nis = cpf_nis.strip()
+            if 'cpf' in data or 'cpf_nis' in data:
+                cpf = data.get('cpf') or data.get('cpf_nis')
+                if not cpf or not cpf.strip():
+                    return JsonResponse({'erro': 'CPF do responsável é obrigatório'}, status=400)
+                if not validar_cpf(cpf):
+                    return JsonResponse({'erro': 'CPF inválido.'}, status=400)
+                if BeneficiaryFamily.objects.filter(cpf=cpf.strip()).exclude(pk=f.pk).exists():
+                    return JsonResponse({'erro': 'CPF já cadastrado para outra família'}, status=409)
+                f.cpf = cpf.strip()
+            if 'nis' in data:
+                nis = data.get('nis')
+                if nis and nis.strip():
+                    if not validar_nis(nis):
+                        return JsonResponse({'erro': 'NIS inválido.'}, status=400)
+                    if BeneficiaryFamily.objects.filter(nis=nis.strip()).exclude(pk=f.pk).exists():
+                        return JsonResponse({'erro': 'NIS já cadastrado para outra família'}, status=409)
+                    f.nis = nis.strip()
+                else:
+                    f.nis = None
             if 'telefone' in data:
                 if not telefone or not telefone.strip():
                     return JsonResponse({'erro': 'Telefone é obrigatório'}, status=400)
@@ -634,6 +696,10 @@ def api_beneficiario_detail(request, pk):
                 f.endereco = endereco.strip()
             if numero_membros is not None:
                 f.numero_membros = int(numero_membros)
+            if 'cota_limite' in data or 'cotaLimite' in data:
+                cota_val = data.get('cota_limite') or data.get('cotaLimite')
+                if cota_val is not None:
+                    f.cota_limite = int(cota_val)
             if status:
                 f.status = status.lower() if status.lower() in ['ativo', 'inativo'] else f.status
 
@@ -761,6 +827,9 @@ def api_configuracoes(request):
     config = GlobalConfiguration.objects.first()
     if not config:
         config = GlobalConfiguration.objects.create(id=1)
+    if config.instagram_link == 'https://www.instagram.com/ondadura/':
+        config.instagram_link = 'https://www.instagram.com/ondajoinville/'
+        config.save()
 
     if request.method == 'GET':
         return JsonResponse({
@@ -1273,5 +1342,109 @@ def api_notificacoes(request):
         return JsonResponse({'notificacoes': notifications_list})
     except Exception as e:
         return JsonResponse({'erro': str(e)}, status=500)
+
+
+def gestao_categorias_view(request):
+    return render(request, 'gestao-categorias.html')
+
+
+@csrf_exempt
+@api_auth_required
+def api_categorias(request):
+    if request.method == 'GET':
+        if Category.objects.count() == 0:
+            default_cats = ['Cereais', 'Leguminosas', 'Higiene', 'Proteínas', 'Limpeza', 'Outros']
+            for cat_name in default_cats:
+                Category.objects.get_or_create(nome=cat_name)
+        categories = Category.objects.all().order_by('nome')
+        cat_list = []
+        for c in categories:
+            prod_count = Product.objects.filter(categoria=c).count()
+            cat_list.append({
+                'id': c.id_categoria,
+                'nome': c.nome,
+                'descricao': c.descricao or '',
+                'qtd_produtos': prod_count
+            })
+        return JsonResponse({'categorias': cat_list})
+
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nome = data.get('nome')
+            descricao = data.get('descricao', '')
+
+            if not nome or not nome.strip():
+                return JsonResponse({'erro': 'Nome da categoria é obrigatório'}, status=400)
+
+            nome_stripped = nome.strip()
+            if Category.objects.filter(nome__iexact=nome_stripped).exists():
+                return JsonResponse({'erro': 'Categoria com este nome já existe'}, status=409)
+
+            c = Category.objects.create(nome=nome_stripped, descricao=descricao)
+
+            ActivityLog.objects.create(
+                id_usuario=request.user,
+                acao='CADASTRO_CATEGORIA',
+                descricao=f'Categoria {c.nome} criada.'
+            )
+            return JsonResponse({'id': c.id_categoria, 'nome': c.nome}, status=201)
+        except Exception as e:
+            return JsonResponse({'erro': str(e)}, status=500)
+
+    return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+
+@csrf_exempt
+@api_auth_required
+def api_categoria_detail(request, pk):
+    try:
+        c = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        return JsonResponse({'erro': 'Categoria não encontrada'}, status=404)
+
+    if request.method in ['PUT', 'PATCH']:
+        try:
+            data = json.loads(request.body)
+            nome = data.get('nome')
+            descricao = data.get('descricao')
+
+            if nome is not None:
+                nome_stripped = nome.strip()
+                if not nome_stripped:
+                    return JsonResponse({'erro': 'Nome da categoria é obrigatório'}, status=400)
+                if Category.objects.filter(nome__iexact=nome_stripped).exclude(pk=c.pk).exists():
+                    return JsonResponse({'erro': 'Categoria com este nome já existe'}, status=409)
+                c.nome = nome_stripped
+
+            if descricao is not None:
+                c.descricao = descricao.strip()
+
+            c.save()
+
+            ActivityLog.objects.create(
+                id_usuario=request.user,
+                acao='EDICAO_CATEGORIA',
+                descricao=f'Categoria {c.nome} editada.'
+            )
+            return JsonResponse({'id': c.id_categoria, 'nome': c.nome})
+        except Exception as e:
+            return JsonResponse({'erro': str(e)}, status=500)
+
+    elif request.method == 'DELETE':
+        if Product.objects.filter(categoria=c).exists():
+            return JsonResponse({'erro': 'Não é possível excluir uma categoria que possui produtos associados.'}, status=400)
+
+        nome_cat = c.nome
+        c.delete()
+
+        ActivityLog.objects.create(
+            id_usuario=request.user,
+            acao='EXCLUSAO_CATEGORIA',
+            descricao=f'Categoria {nome_cat} excluída.'
+        )
+        return JsonResponse({'sucesso': True})
+
+    return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
 

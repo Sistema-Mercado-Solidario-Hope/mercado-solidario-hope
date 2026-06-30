@@ -41,7 +41,7 @@ export function aplicarMascaraTelefone(value) {
 document.addEventListener('DOMContentLoaded', () => {
   const redirectUser = (usuario) => {
     if (usuario && (usuario.tipo === 'admin' || usuario.tipo === 'operador' || usuario.tipo === 'colaborador')) {
-      window.location.href = './admin.html';
+      window.location.href = './visao-geral-estoque.html';
     } else {
       window.location.href = './home.html';
     }
@@ -232,13 +232,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Adiciona estado de carregamento ao botão
       const btnOriginalText = btnSubmit.innerHTML;
       btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg> Entrando...
-      `;
+      btnSubmit.innerHTML = 'Entrando...';
 
+      let success = false;
       try {
         const { status, data } = await Api.post('/api/auth/login', {
           identificador: identificadorInput.value,
@@ -246,25 +242,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (status === 200 && data.token) {
+          success = true;
           localStorage.setItem('ms_token', data.token);
           localStorage.setItem('ms_user', JSON.stringify(data.usuario));
           
-          if (window.toast) {
-            window.toast('sucesso', `Bem-vindo de volta, ${data.usuario.nome}!`);
-          }
+          mostrarMensagemSucesso(`Login realizado com sucesso! Bem-vindo(a) de volta, ${data.usuario.nome || 'usuário'}.`);
           
-          // Redireciona segundo o tipo do usuário (admin/operador para admin.html, doador para home.html)
           setTimeout(() => {
             redirectUser(data.usuario);
-          }, 800);
+          }, 1200);
         } else {
           mostrarMensagemErro(data.erro || "Combinação incorreta de login/senha.");
         }
       } catch (err) {
         mostrarMensagemErro("Ocorreu um erro de rede. Verifique seu sinal e tente novamente.");
       } finally {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = btnOriginalText;
+        if (!success) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = btnOriginalText;
+        } else {
+          btnSubmit.innerHTML = 'Conectado!';
+        }
       }
     });
 

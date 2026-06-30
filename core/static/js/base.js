@@ -282,6 +282,15 @@ document.querySelectorAll(".mobile-nav-item").forEach(function (item) {
 
 // ============ SIDEBAR DROPDOWNS & ACTIVE LINK DETECTION ============
 function initSidebarDropdowns() {
+    const submenuProdutos = document.getElementById('submenu-produtos');
+    if (submenuProdutos) {
+        if (!submenuProdutos.querySelector('a[href="/gestao-categorias.html"]')) {
+            const li = document.createElement('li');
+            li.innerHTML = '<a href="/gestao-categorias.html" class="poppins-regular" role="menuitem">Gerenciar Categorias</a>';
+            submenuProdutos.appendChild(li);
+        }
+    }
+
     const triggers = document.querySelectorAll('.dropdown-trigger');
     
     triggers.forEach(trigger => {
@@ -321,7 +330,7 @@ function initSidebarDropdowns() {
         if (!href) return;
         
         const hrefFile = getFilename(href);
-        const isMatch = pathFile === hrefFile || (pathFile === '' && hrefFile === 'admin.html');
+        const isMatch = pathFile === hrefFile || (pathFile === '' && hrefFile === 'visao-geral-estoque.html');
                         
         if (isMatch) {
             link.classList.add('active');
@@ -354,7 +363,7 @@ function initSidebarDropdowns() {
         if (!href) return;
         
         const hrefFile = getFilename(href);
-        const isMatch = pathFile === hrefFile || (pathFile === '' && hrefFile === 'admin.html');
+        const isMatch = pathFile === hrefFile || (pathFile === '' && hrefFile === 'visao-geral-estoque.html');
                         
         if (isMatch) {
             link.classList.add('active');
@@ -362,8 +371,27 @@ function initSidebarDropdowns() {
     });
 }
 
+function initProfileAvatars() {
+    const profileAvatars = document.querySelectorAll('.profile-avatar');
+    profileAvatars.forEach(el => {
+        el.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user" style="display:block;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        `;
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.background = 'var(--purple-bg)';
+        el.style.borderRadius = '50%';
+        el.style.width = '40px';
+        el.style.height = '40px';
+        el.style.border = '2px solid transparent';
+        el.style.transition = 'border-color 0.2s';
+    });
+}
+
 // Call on load
 initSidebarDropdowns();
+initProfileAvatars();
 
 // Expor showToast e initSidebarDropdowns globalmente
 window.showToast = showToast;

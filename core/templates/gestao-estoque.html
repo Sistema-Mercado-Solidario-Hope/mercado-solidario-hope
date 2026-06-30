@@ -25,8 +25,8 @@
     rel="stylesheet"
 >
 
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/dashboard-estoque.css">
+<link rel="stylesheet" href="css/base.css?v={% now 'U' %}">
+<link rel="stylesheet" href="css/dashboard-estoque.css?v={% now 'U' %}">
 
 </head>
 
@@ -890,8 +890,8 @@
 
     </nav>
 
-    <script src="js/base.js" type="module" defer></script>
-    <script src="js/dashboard-estoque.js" type="module"></script>
+    <script src="js/base.js?v={% now 'U' %}" type="module" defer></script>
+    <script src="js/dashboard-estoque.js?v={% now 'U' %}" type="module"></script>
 
 </body>
 </html>

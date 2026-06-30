@@ -49,10 +49,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==================== FILTRO E PAGINAÇÃO ====================
     function filtrarFamilias(termo) {
         if (!termo) return familias;
+        const lower = termo.toLowerCase();
+        const cleanTerm = lower.replace(/\D/g, '');
         return familias.filter(f =>
-            f.nome.toLowerCase().includes(termo.toLowerCase()) ||
-            f.responsavel.toLowerCase().includes(termo.toLowerCase()) ||
-            f.telefone.includes(termo)
+            f.nome.toLowerCase().includes(lower) ||
+            f.responsavel.toLowerCase().includes(lower) ||
+            f.telefone.includes(termo) ||
+            (f.cpf && f.cpf.replace(/\D/g, '').includes(cleanTerm)) ||
+            (f.nis && f.nis.includes(termo))
         );
     }
 
@@ -73,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tableBody.innerHTML = '';
 
         if (exibidas.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" class="poppins-regular" style="text-align:center; padding:32px; color:var(--text-muted);">Nenhuma família encontrada.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="9" class="poppins-regular" style="text-align:center; padding:32px; color:var(--text-muted);">Nenhuma família encontrada.</td></tr>`;
             tableInfo.textContent = 'Exibindo 0 famílias';
         } else {
             exibidas.forEach(f => {
@@ -81,6 +85,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tr.innerHTML = `
                     <td><strong>${f.nome}</strong></td>
                     <td>${f.responsavel}</td>
+                    <td>${f.cpf || '—'}</td>
+                    <td>${f.nis || '—'}</td>
                     <td>${f.telefone}</td>
                     <td>${f.numMembros}</td>
                     <td>${formatarDataRelativa(f.ultimaParticipacao)}</td>
@@ -156,6 +162,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     id: b.id,
                     nome: b.nome || b.nomeFamilia,
                     responsavel: b.responsavel || b.responsavel_nome,
+                    cpf: b.cpf || b.cpf_nis || '',
+                    nis: b.nis || '',
                     telefone: b.telefone,
                     endereco: b.endereco || '',
                     numMembros: b.members || b.numMembros || b.qtdIntegrantes || 1,

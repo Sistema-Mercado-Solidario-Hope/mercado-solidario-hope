@@ -20,11 +20,13 @@ class BeneficiaryFamily(models.Model):
     id_familia = models.AutoField(primary_key=True)
     nome_familia = models.CharField(max_length=100)
     responsavel_nome = models.CharField(max_length=255)
-    cpf_nis = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    cpf = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    nis = models.CharField(max_length=20, unique=True, null=True, blank=True)
     telefone = models.CharField(max_length=20)
     endereco = models.CharField(max_length=255, null=True, blank=True)
     numero_membros = models.IntegerField(default=1)
     status = models.CharField(max_length=20, default='ativo')  # 'ativo', 'inativo'
+    cota_limite = models.IntegerField(default=15)
     data_ultima_entrega = models.DateTimeField(null=True, blank=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     lgpd_accept = models.BooleanField(default=False)
@@ -139,7 +141,7 @@ class GlobalConfiguration(models.Model):
     qr_code_image = models.TextField(blank=True)  # base64 string or image URL
     cnpj = models.CharField(max_length=20, default='22788440000198')
     email_contato = models.CharField(max_length=255, default='contato@ondadura.com')
-    instagram_link = models.CharField(max_length=255, default='https://www.instagram.com/ondadura/')
+    instagram_link = models.CharField(max_length=255, default='https://www.instagram.com/ondajoinville/')
 
     class Meta:
         db_table = 'global_configuration'

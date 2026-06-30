@@ -334,5 +334,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     filtroStatus.addEventListener('change', () => renderizarTabela(1));
 
     // ==================== INICIALIZAÇÃO ====================
+    async function carregarCategorias() {
+        try {
+            const data = await Api.get('/api/estoque/categorias');
+            if (data && data.categorias) {
+                // Populate filtroCategoria
+                const filtroVal = filtroCategoria.value;
+                filtroCategoria.innerHTML = '<option value="">Todas as categorias</option>';
+                data.categorias.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.nome;
+                    opt.textContent = cat.nome;
+                    filtroCategoria.appendChild(opt);
+                });
+                if (filtroVal) filtroCategoria.value = filtroVal;
+
+                // Populate editCategoria
+                const editCat = document.getElementById('editCategoria');
+                if (editCat) {
+                    editCat.innerHTML = '';
+                    data.categorias.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat.nome;
+                        opt.textContent = cat.nome;
+                        editCat.appendChild(opt);
+                    });
+                }
+            }
+        } catch (e) {
+            console.error('Erro ao carregar categorias no dashboard:', e);
+        }
+    }
+
+    await carregarCategorias();
     await carregarERenderizar();
 });

@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css?v=3">
-    <link rel="stylesheet" href="css/familia-listagem.css?v=3">
+    <link rel="stylesheet" href="css/base.css?v={% now 'U' %}">
+    <link rel="stylesheet" href="css/familia-listagem.css?v={% now 'U' %}">
 </head>
 <body>
 
@@ -271,11 +271,13 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="estoque-table" style="width:100%; border-collapse:collapse; text-align:left;">
+                    <table class="familias-table" style="width:100%; border-collapse:collapse; text-align:left;">
                         <thead>
                             <tr style="border-bottom: 2px solid var(--border-color);">
                                 <th scope="col" style="padding:12px 16px; color:var(--text-dark);">Família</th>
                                 <th scope="col" style="padding:12px 16px; color:var(--text-dark);">Responsável</th>
+                                <th scope="col" style="padding:12px 16px; color:var(--text-dark);">CPF</th>
+                                <th scope="col" style="padding:12px 16px; color:var(--text-dark);">NIS</th>
                                 <th scope="col" style="padding:12px 16px; color:var(--text-dark);">Telefone</th>
                                 <th scope="col" style="padding:12px 16px; color:var(--text-dark);">Membros</th>
                                 <th scope="col" style="padding:12px 16px; color:var(--text-dark);">Última Entrega</th>
@@ -311,7 +313,7 @@
 
     </main>
 
-    <script src="js/base.js?v=3" type="module" defer></script>
-    <script src="js/lista-familias.js?v=3" type="module"></script>
+    <script src="js/base.js?v={% now 'U' %}" type="module" defer></script>
+    <script src="js/lista-familias.js?v={% now 'U' %}" type="module"></script>
 </body>
 </html>

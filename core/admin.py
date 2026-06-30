@@ -32,9 +32,9 @@ class UsuarioAdmin(UserAdmin):
 # Beneficiary Families
 @admin.register(BeneficiaryFamily)
 class BeneficiaryFamilyAdmin(admin.ModelAdmin):
-    list_display = ('nome_familia', 'responsavel_nome', 'cpf_nis', 'telefone', 'status', 'data_ultima_entrega', 'lgpd_accept')
+    list_display = ('nome_familia', 'responsavel_nome', 'cpf', 'nis', 'telefone', 'status', 'data_ultima_entrega', 'lgpd_accept')
     list_filter = ('status', 'lgpd_accept', 'data_cadastro')
-    search_fields = ('nome_familia', 'responsavel_nome', 'cpf_nis', 'telefone')
+    search_fields = ('nome_familia', 'responsavel_nome', 'cpf', 'nis', 'telefone')
     ordering = ('nome_familia',)
 
 # Categories

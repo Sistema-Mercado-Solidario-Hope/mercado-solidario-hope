@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css?v=3">
-    <link rel="stylesheet" href="css/cadastro-produto.css?v=3">
+    <link rel="stylesheet" href="css/base.css?v={% now 'U' %}">
+    <link rel="stylesheet" href="css/cadastro-produto.css?v={% now 'U' %}">
 </head>
 <body>
 
@@ -267,12 +267,20 @@
                         </div>
                     </div>
 
-                    <!-- Linha 3: Limites de Estoque -->
+                    <!-- Linha 3: Limites de Estoque e Estoque Atual -->
                     <div class="form-row">
+                        <div class="form-group">
+                            <label class="poppins-medium" for="estoqueAtual">Quantidade Atual em Estoque *</label>
+                            <input type="number" id="estoqueAtual" class="form-input poppins-regular" min="0" value="0" required>
+                        </div>
                         <div class="form-group">
                             <label class="poppins-medium" for="estoqueMinimo">Estoque Mínimo (Alerta) *</label>
                             <input type="number" id="estoqueMinimo" class="form-input poppins-regular" min="0" value="10" required>
                         </div>
+                    </div>
+
+                    <!-- Linha 4: Estoque Máximo e Meta -->
+                    <div class="form-row">
                         <div class="form-group">
                             <label class="poppins-medium" for="estoqueMaximo">Estoque Máximo (Limite) *</label>
                             <input type="number" id="estoqueMaximo" class="form-input poppins-regular" min="1" value="1000" required>
@@ -285,7 +293,7 @@
 
                     <!-- Drag & Drop Imagem -->
                     <div class="form-group">
-                        <label class="poppins-medium">Imagem do Produto *</label>
+                        <label class="poppins-medium">Imagem do Produto (Opcional)</label>
                         <div class="drop-zone" id="dropZone">
                             <div class="upload-placeholder" id="uploadPlaceholder">
                                 <span class="upload-icon" style="font-size:32px;">📷</span>
@@ -321,7 +329,7 @@
 
     </main>
 
-    <script src="js/base.js?v=3" type="module" defer></script>
-    <script src="js/cadastro-produto.js?v=3" type="module"></script>
+    <script src="js/base.js?v={% now 'U' %}" type="module" defer></script>
+    <script src="js/cadastro-produto.js?v={% now 'U' %}" type="module"></script>
 </body>
 </html>

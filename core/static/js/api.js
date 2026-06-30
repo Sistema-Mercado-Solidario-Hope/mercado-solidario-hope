@@ -207,7 +207,7 @@ const Api = {
           } else {
             resolve({
               status: 401,
-              data: { erro: "Credenciais inválidas. Para testar use: operador@mercadosolidario.com.br / password" }
+              data: { erro: "Credenciais inválidas." }
             });
           }
           return;

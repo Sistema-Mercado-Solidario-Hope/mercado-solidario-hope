@@ -1,5 +1,27 @@
 import { Api } from './api.js';
 
+function formatarTelefoneExibicao(tel) {
+    if (!tel) return '';
+    let limpo = tel.replace(/\D/g, '');
+    if (limpo.startsWith('55') && limpo.length >= 12) {
+        let pais = limpo.substring(0, 2);
+        let ddd = limpo.substring(2, 4);
+        let resto = limpo.substring(4);
+        if (resto.length === 9) {
+            return `+${pais} (${ddd}) ${resto.substring(0, 5)}-${resto.substring(5)}`;
+        } else {
+            return `+${pais} (${ddd}) ${resto.substring(0, 4)}-${resto.substring(4)}`;
+        }
+    }
+    if (limpo.length === 11) {
+        return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 7)}-${limpo.substring(7)}`;
+    }
+    if (limpo.length === 10) {
+        return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 6)}-${limpo.substring(6)}`;
+    }
+    return tel;
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     const modal = document.getElementById('pixModal');
     const openModalBtns = document.querySelectorAll('.btn-confirm-donation, .mobile-doar-btn');
@@ -34,7 +56,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // Telefone
                 const phoneText = document.getElementById('phone-text');
                 if (phoneText && config.telefone_contato) {
-                    phoneText.innerHTML = `${config.telefone_contato}<br>${config.telefone_contato} (WhatsApp)`;
+                    const formatted = formatarTelefoneExibicao(config.telefone_contato);
+                    phoneText.innerHTML = `${formatted}<br>${formatted} (WhatsApp)`;
                 }
 
                 // E-mail

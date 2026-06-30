@@ -23,7 +23,8 @@ class DeliveryTests(TestCase):
         self.family = BeneficiaryFamily.objects.create(
             nome_familia='Família Teste',
             responsavel_nome='Responsável Teste',
-            cpf_nis='11122233344',
+            cpf='11144477735',
+            nis='11122233344',
             telefone='(47) 99999-5555',
             status='ativo',
             lgpd_accept=True
