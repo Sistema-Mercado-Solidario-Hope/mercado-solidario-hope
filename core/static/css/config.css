@@ -16,6 +16,11 @@ PÁGINA: CONFIGURAÇÕES
 
 /* ==================== SEÇÕES ==================== */
 
+.config-container {     width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 40px 48px; }
+
 .config-section {
 width: 100%;
 max-width: 1400px;

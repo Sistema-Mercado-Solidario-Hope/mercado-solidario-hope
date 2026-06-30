@@ -1,9 +1,10 @@
 /* ==================== VISÃO GERAL ESTOQUE - ESTILOS ESPECÍFICOS ==================== */
 
 .dashboard-content {
-    padding: 40px 24px;
-    max-width: 1200px;
-    margin: 0 auto;
+width: 100%;
+max-width: 980px;
+margin: 0 auto;
+padding: 32px 40px 48px;
 }
 
 /* Cabeçalho da página */
