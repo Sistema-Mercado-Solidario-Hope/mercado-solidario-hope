@@ -103,6 +103,7 @@
                     <ul class="dropdown-container" id="submenu-arrecadacao" role="menu">
                         <li><a href="/validar-intencoes.html" class="poppins-regular" role="menuitem">Validar Intenções</a></li>
                         <li><a href="/metas-produtos.html" class="poppins-regular" role="menuitem">Metas de Arrecadação</a></li>
+                        <li><a href="/doacao-manual.html" class="poppins-regular" role="menuitem">Registrar Doação</a></li>
                     </ul>
                 </li>
 
@@ -272,6 +273,7 @@
                     <div class="doador-info-readonly">
                         <p class="poppins-regular"><strong>Doador:</strong> <span id="modalNome"></span></p>
                         <p class="poppins-regular"><strong>Telefone:</strong> <span id="modalTelefone"></span></p>
+                        <p class="poppins-regular"><strong>Data:</strong> <span id="modalData"></span></p>
                     </div>
 
                     <h4 class="poppins-semibold" style="margin: 20px 0 8px; color: var(--text-dark);">Itens doados</h4>
@@ -303,6 +305,9 @@
                     </button>
                     <button type="button" id="btnConfirmarRecebimento" class="btn-confirmar-recebimento poppins-semibold">
                         Confirmar recebimento
+                    </button>
+                    <button type="button" id="btnFecharModal" class="btn-fechar-modal poppins-semibold" style="display: none; background: #6E6875; color: white; border: none; border-radius: 40px; padding: 14px 32px; font-size: 15px; cursor: pointer;">
+                        Fechar
                     </button>
                 </div>
             </div>

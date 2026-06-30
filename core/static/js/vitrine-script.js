@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let allProducts = [];
 
+    function getIconePorCategoria(cat) {
+        const icons = {
+            'Cereais': '🍚',
+            'Leguminosas': '🫘',
+            'Higiene': '🧼',
+            'Proteínas': '🥛',
+            'Limpeza': '🧴',
+            'Cesta Básica': '🧺'
+        };
+        return icons[cat] || '📦';
+    }
+
     // ==================== 1. CARREGAR E RENDERIZAR PRODUTOS ====================
     async function carregarVitrine() {
         try {
@@ -68,18 +80,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dataCats.push('outros');
             }
             const categoryAttr = dataCats.join(' ');
-
             const card = document.createElement('div');
+
+            const emoji = getIconePorCategoria(p.categoria);
+            function renderCardImage(badgeHTML, extraClass = '') {
+                if (!p.foto) {
+                    return `
+                        <div class="card-image-wrapper placeholder-bg ${extraClass}" style="background: linear-gradient(135deg, #f6eeff 0%, #ede3f9 100%); display: flex; align-items: center; justify-content: center;">
+                            ${badgeHTML}
+                            <span style="font-size: 56px; line-height: 1;">${emoji}</span>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="card-image-wrapper ${extraClass}">
+                        ${badgeHTML}
+                        <img src="${p.foto}" alt="${p.nome}">
+                    </div>
+                `;
+            }
             
             // Meta Atingida
             if (deficit <= 0) {
                 card.className = 'card';
                 card.setAttribute('data-category', categoryAttr);
                 card.innerHTML = `
-                    <div class="card-image-wrapper overlay-dark">
-                        <span class="badge-centered poppins-bold">META ATINGIDA</span>
-                        <img src="${p.foto || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80'}" alt="${p.nome}">
-                    </div>
+                    ${renderCardImage('<span class="badge-centered poppins-bold">META ATINGIDA</span>', 'overlay-dark')}
                     <div class="card-content">
                         <h3 class="poppins-semibold item-title">${p.nome}</h3>
                         <div class="progress-info">
@@ -99,10 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 card.className = 'card card-border-red';
                 card.setAttribute('data-category', categoryAttr);
                 card.innerHTML = `
-                    <div class="card-image-wrapper">
-                        <span class="badge badge-red poppins-semibold">Crítico</span>
-                        <img src="${p.foto || 'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=400&q=80'}" alt="${p.nome}">
-                    </div>
+                    ${renderCardImage('<span class="badge badge-red poppins-semibold">Crítico</span>')}
                     <div class="card-content">
                         <h3 class="poppins-semibold item-title">${p.nome}</h3>
                         <div class="progress-info">
@@ -119,10 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 card.className = 'card card-border-blue';
                 card.setAttribute('data-category', categoryAttr);
                 card.innerHTML = `
-                    <div class="card-image-wrapper">
-                        <span class="badge badge-blue poppins-semibold">Urgente</span>
-                        <img src="${p.foto || 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=400&q=80'}" alt="${p.nome}">
-                    </div>
+                    ${renderCardImage('<span class="badge badge-blue poppins-semibold">Urgente</span>')}
                     <div class="card-content">
                         <h3 class="poppins-semibold item-title">${p.nome}</h3>
                         <div class="progress-info">
@@ -135,8 +155,27 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 `;
             }
-
+ 
             productsGrid.appendChild(card);
+
+            const img = card.querySelector('img');
+            if (img) {
+                img.addEventListener('error', function() {
+                    const fallbackSpan = document.createElement('span');
+                    fallbackSpan.style.fontSize = '56px';
+                    fallbackSpan.style.lineHeight = '1';
+                    fallbackSpan.textContent = emoji;
+                    
+                    const parent = this.parentElement;
+                    this.remove();
+                    
+                    parent.style.background = 'linear-gradient(135deg, #f6eeff 0%, #ede3f9 100%)';
+                    parent.style.display = 'flex';
+                    parent.style.alignItems = 'center';
+                    parent.style.justifyContent = 'center';
+                    parent.appendChild(fallbackSpan);
+                });
+            }
         });
 
         filterAndSearchProducts();

@@ -162,3 +162,35 @@ class DonationTests(TestCase):
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.content)
         self.assertIn('erro', data)
+
+    def test_cannot_modify_already_completed_donation(self):
+        # Create a donation that is already completed
+        donation = DonationIntake.objects.create(
+            nome_doador='Doador Exemplo',
+            telefone_doador='(47) 99999-1234',
+            status_doacao='concluida',
+            codigo_rastreamento='#DOA-2026-TESTE-FINAL'
+        )
+        DonationItem.objects.create(
+            id_doacao=donation,
+            id_produto=self.product,
+            quantidade=25.00
+        )
+
+        payload = {'status': 'concluida'}
+        response = self.client.patch(
+            f'/api/intencao-doacao/{donation.id_doacao}/status',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        # Should return HTTP 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.content)
+        self.assertIn('erro', data)
+        self.assertEqual(data['erro'], 'Esta intenção de doação já foi finalizada e não pode ser alterada')
+
+        # Verify stock did not increase again
+        self.product.refresh_from_db()
+        self.assertEqual(float(self.product.estoque_atual), 100.00)
+

@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (data && data.produtos) {
                 itensDisponiveis = data.produtos.map(p => ({
                     id: p.id,
-                    nome: `${p.nome} (${p.unidade})`,
+                    nome: p.nome,
+                    unidade: p.unidade,
                     categoria: p.categoria,
                     icone: getIconePorCategoria(p.categoria)
                 }));
@@ -131,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             </div>
             <div class="item-quantidade">
-                <label for="qtd-${item.id}" class="poppins-medium">Quantidade:</label>
+                <label for="qtd-${item.id}" class="poppins-medium">Qtd (${item.unidade || 'un'}):</label>
                 <input type="number" id="qtd-${item.id}" name="qtd-${item.id}" min="0" value="0" class="poppins-regular" placeholder="0">
             </div>
         `;

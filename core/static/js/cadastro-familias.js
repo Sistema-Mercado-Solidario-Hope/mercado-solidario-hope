@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const nomeCompleto = `Família ${sobrenome}`;
+        const nomeCompleto = sobrenome;
         
         const payload = {
             nome: nomeCompleto,

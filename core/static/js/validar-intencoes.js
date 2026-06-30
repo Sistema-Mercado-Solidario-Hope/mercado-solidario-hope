@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modalCodigo = document.getElementById('modalCodigo');
     const modalNome = document.getElementById('modalNome');
     const modalTelefone = document.getElementById('modalTelefone');
+    const modalData = document.getElementById('modalData');
     const modalItensContainer = document.getElementById('modalItensContainer');
 
     let intencaoAtual = null;
@@ -90,10 +91,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     function criarCardIntencao(intencao) {
         const card = document.createElement('div');
         card.className = 'intencao-card';
+        card.style.cursor = 'pointer';
+        
+        const isPendente = intencao.status === 'pendente';
+        const statusLabel = intencao.status === 'pendente' ? 'Pendente' : (intencao.status === 'concluida' ? 'Validada' : 'Cancelada');
         card.innerHTML = `
             <div class="intencao-card-header">
                 <span class="codigo-badge poppins-semibold">${intencao.codigo}</span>
-                <span class="status-badge status-${intencao.status} poppins-semibold">${intencao.status === 'pendente' ? 'Pendente' : 'Validado'}</span>
+                <span class="status-badge status-${intencao.status} poppins-semibold">${statusLabel}</span>
             </div>
             <div class="intencao-card-body">
                 <p><strong>Nome:</strong> ${intencao.doador.nome}</p>
@@ -102,14 +107,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p><strong>Itens:</strong> ${intencao.itens.length} item(ns)</p>
             </div>
             <div class="intencao-card-footer">
-                <button class="btn-editar-intencao poppins-semibold" data-codigo="${intencao.codigo}">Editar / Receber</button>
+                ${isPendente 
+                    ? `<button class="btn-editar-intencao poppins-semibold" data-codigo="${intencao.codigo}">Editar / Receber</button>`
+                    : `<button class="btn-editar-intencao poppins-semibold btn-visualizar-intencao" data-codigo="${intencao.codigo}" style="background:#F3E8FF; color:var(--purple-primary); border:1px solid #D0C2D7; cursor:pointer; box-shadow:none;">Visualizar Itens</button>`
+                }
             </div>
         `;
 
-        card.querySelector('.btn-editar-intencao').addEventListener('click', (e) => {
-            e.stopPropagation();
+        card.addEventListener('click', () => {
             abrirModalEdicao(intencao.codigo);
         });
+
+        const btn = card.querySelector('.btn-editar-intencao');
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                abrirModalEdicao(intencao.codigo);
+            });
+        }
 
         return card;
     }
@@ -137,7 +152,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     itens: i.itens.map(it => ({
                         id: it.id || null,
                         nome: it.produto_nome,
-                        quantidade: it.quantidade
+                        quantidade: it.quantidade,
+                        unidade: it.unidade || 'un'
                     })),
                     status: i.status
                 }));
@@ -156,7 +172,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (data && data.produtos) {
                 itensCatalogo = data.produtos.map(p => ({
                     id: p.id,
-                    nome: p.nome
+                    nome: p.nome,
+                    unidade: p.unidade
                 }));
             }
         } catch (e) {
@@ -172,11 +189,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         modalCodigo.textContent = intencaoAtual.codigo;
         modalNome.textContent = intencaoAtual.doador.nome;
         modalTelefone.textContent = intencaoAtual.doador.telefone;
+        modalData.textContent = intencaoAtual.data;
         renderizarItensEdicao(intencaoAtual.itens);
 
         // Ocultar catálogo
         catalogoContainer.style.display = 'none';
         btnToggleCatalogo.textContent = '📋 Adicionar item do catálogo';
+
+        const isEditable = intencaoAtual.status === 'pendente';
+        btnSalvarEdicao.style.display = isEditable ? 'inline-block' : 'none';
+        btnConfirmarRecebimento.style.display = isEditable ? 'inline-block' : 'none';
+        btnToggleCatalogo.style.display = isEditable ? 'block' : 'none';
+
+        const btnFechar = document.getElementById('btnFecharModal');
+        if (btnFechar) {
+            btnFechar.style.display = isEditable ? 'none' : 'inline-block';
+            if (!btnFechar.dataset.bound) {
+                btnFechar.addEventListener('click', fecharModalEdicao);
+                btnFechar.dataset.bound = "true";
+            }
+        }
 
         modalOverlay.classList.add('active');
         modalOverlay.setAttribute('aria-hidden', 'false');
@@ -200,29 +232,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         const row = document.createElement('div');
         row.className = 'item-edicao-row';
         const nomeExibicao = item.nome || 'Item personalizado';
+        const isEditable = intencaoAtual && intencaoAtual.status === 'pendente';
         row.innerHTML = `
             <span class="nome-item poppins-regular">${nomeExibicao}</span>
-            <input type="number" class="quantidade-item poppins-regular" value="${item.quantidade}" min="0" data-index="${index}" style="width: 80px; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px;">
-            <button class="btn-remover-item-modal poppins-medium" style="background:none; border:none; color:var(--danger); cursor:pointer;">🗑️ Remover</button>
+            <div style="display:flex; align-items:center; gap:6px;">
+                <input type="number" class="quantidade-item poppins-regular" value="${item.quantidade}" min="0" data-index="${index}" ${isEditable ? '' : 'disabled'}>
+                <span class="poppins-semibold" style="font-size:13px; color:var(--text-main); min-width:24px;">${item.unidade || 'un'}</span>
+            </div>
+            ${isEditable ? '<button class="btn-remover-item-modal poppins-medium">🗑️ Remover</button>' : ''}
         `;
 
-        const btnRemover = row.querySelector('.btn-remover-item-modal');
-        btnRemover.addEventListener('click', async () => {
-            const confirmado = await criarModalConfirmacao('Tem certeza que deseja remover este item?');
-            if (confirmado) {
-                intencaoAtual.itens.splice(index, 1);
-                renderizarItensEdicao(intencaoAtual.itens);
-                toast('Item removido', 'info');
+        if (isEditable) {
+            const btnRemover = row.querySelector('.btn-remover-item-modal');
+            if (btnRemover) {
+                btnRemover.addEventListener('click', async () => {
+                    const confirmado = await criarModalConfirmacao('Tem certeza que deseja remover este item?');
+                    if (confirmado) {
+                        intencaoAtual.itens.splice(index, 1);
+                        renderizarItensEdicao(intencaoAtual.itens);
+                        toast('Item removido', 'info');
+                    }
+                });
             }
-        });
 
-        const inputQtd = row.querySelector('.quantidade-item');
-        inputQtd.addEventListener('change', (e) => {
-            const novaQtd = parseFloat(e.target.value);
-            if (!isNaN(novaQtd) && novaQtd >= 0) {
-                intencaoAtual.itens[index].quantidade = novaQtd;
+            const inputQtd = row.querySelector('.quantidade-item');
+            if (inputQtd) {
+                inputQtd.addEventListener('change', (e) => {
+                    const novaQtd = parseFloat(e.target.value);
+                    if (!isNaN(novaQtd) && novaQtd >= 0) {
+                        intencaoAtual.itens[index].quantidade = novaQtd;
+                    }
+                });
             }
-        });
+        }
 
         return row;
     }
@@ -254,10 +296,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     function adicionarItemDoCatalogo(id, nome) {
         if (!intencaoAtual) return;
 
+        const prod = itensCatalogo.find(p => p.id === id);
         intencaoAtual.itens.push({
             id: id,
             nome: nome,
-            quantidade: 1
+            quantidade: 1,
+            unidade: prod ? prod.unidade : 'un'
         });
         renderizarItensEdicao(intencaoAtual.itens);
         toast(`Item "${nome}" adicionado.`, 'success');

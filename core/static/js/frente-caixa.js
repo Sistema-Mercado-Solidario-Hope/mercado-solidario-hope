@@ -520,9 +520,7 @@ async function carregarBeneficiario(id) {
         }
 
         if (delivEl) {
-            delivEl.textContent = data.lastDeliveryDays
-                ? `${data.lastDeliveryDays} dias`
-                : '—';
+            delivEl.textContent = data.ultimaParticipacao || '—';
         }
 
         if (statusEl) {
@@ -616,8 +614,8 @@ async function confirmarEntrega() {
                 };
             });
             sessionStorage.setItem('last_delivery', JSON.stringify({
-                id: (res.entrega && res.entrega.id) ? res.entrega.id : 'N/A',
-                data: (res.entrega && res.entrega.data) ? res.entrega.data : new Date().toISOString(),
+                id: (res.data && res.data.entrega && res.data.entrega.id) ? res.data.entrega.id : 'N/A',
+                data: (res.data && res.data.entrega && res.data.entrega.data) ? res.data.entrega.data : new Date().toISOString(),
                 beneficiario: (state.beneficiary && (state.beneficiary.nome || state.beneficiary.nomeFamilia)) ? (state.beneficiary.nome || state.beneficiary.nomeFamilia) : 'Beneficiário',
                 itens: dynamicItens
             }));

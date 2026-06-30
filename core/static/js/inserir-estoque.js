@@ -16,17 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const listaItens = document.getElementById('listaItens');
     const form = document.getElementById('formEntrada');
-    const nomeUsuarioEl = document.getElementById('nomeUsuarioLogado');
-
-    // Load logged-in user name
-    try {
-        const userData = await Api.get('/api/auth/usuario');
-        if (userData && userData.usuario) {
-            nomeUsuarioEl.textContent = userData.usuario.nome || userData.usuario.email || 'Usuário';
-        }
-    } catch (_) {
-        nomeUsuarioEl.textContent = 'Usuário';
-    }
 
     function getIconePorCategoria(cat) {
         const icons = {

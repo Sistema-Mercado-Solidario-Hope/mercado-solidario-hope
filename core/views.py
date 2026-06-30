@@ -646,6 +646,7 @@ def api_beneficiario_detail(request, pk):
             'nis': f.nis or '',
             'cota_limite': f.cota_limite,
             'lastDeliveryDays': last_delivery_days,
+            'ultimaParticipacao': f.data_ultima_entrega.strftime('%d/%m/%Y') if f.data_ultima_entrega else '—',
             'elegivel': f.status == 'ativo',
             'cotaPercent': 0  # mock/calculated
         })
@@ -1092,6 +1093,9 @@ def api_intencao_doacao_status(request, pk):
         donation = DonationIntake.objects.get(pk=pk)
     except DonationIntake.DoesNotExist:
         return JsonResponse({'erro': 'Intenção não encontrada'}, status=404)
+
+    if donation.status_doacao in ['concluida', 'cancelada']:
+        return JsonResponse({'erro': 'Esta intenção de doação já foi finalizada e não pode ser alterada'}, status=400)
 
     try:
         data = json.loads(request.body)
