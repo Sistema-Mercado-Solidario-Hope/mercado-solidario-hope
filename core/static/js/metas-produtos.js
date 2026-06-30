@@ -58,19 +58,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tr = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border-color)';
             tr.innerHTML = `
-                <td style="padding:12px 16px;"><strong>${p.nome}</strong></td>
-                <td style="padding:12px 16px;">${p.categoria}</td>
-                <td style="padding:12px 16px;">${p.quantidade} ${p.unidade}</td>
-                <td style="padding:12px 16px;">
-                    <input type="number" 
-                           class="meta-edit-input" 
-                           data-id="${p.id}" 
-                           value="${p.meta}" 
-                           min="0" 
-                           step="0.01">
-                    <span style="font-size:12px; color:var(--text-muted); margin-left:4px;">${p.unidade}</span>
+                <td><strong>${p.nome}</strong></td>
+                <td>${p.categoria}</td>
+                <td>${p.quantidade} ${p.unidade}</td>
+                <td>
+                    <div class="input-unit-wrap">
+                        <input type="number"
+                               class="meta-edit-input"
+                               data-id="${p.id}"
+                               value="${p.meta}"
+                               min="0"
+                               step="0.01">
+                        <span class="meta-unit-label">${p.unidade}</span>
+                    </div>
                 </td>
-                <td style="padding:12px 16px;">
+                <td>
                     <button class="btn-action-save" data-id="${p.id}">Salvar</button>
                 </td>
             `;

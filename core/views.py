@@ -147,6 +147,9 @@ def visao_geral_view(request):
 def inserir_estoque_view(request):
     return render(request, 'inserir-estoque.html')
 
+def doacao_manual_view(request):
+    return render(request, 'doacao-manual.html')
+
 def validar_intencoes_view(request):
     return render(request, 'validar-intencoes.html')
 
@@ -907,6 +910,55 @@ def api_historico(request):
         return JsonResponse({'sucesso': True})
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+
+# ==================== STOCK ADJUSTMENT API ====================
+@csrf_exempt
+@api_auth_required
+def api_estoque_ajuste(request):
+    """Manual stock adjustment by an authenticated user.
+    Accepts: { itens: [{id, quantidade}, ...] }
+    Increments estoque_atual for each product and logs the action.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'erro': 'Método não permitido'}, status=405)
+
+    try:
+        auth_header = request.headers.get('Authorization', '')
+        token = auth_header.split(' ')[1] if auth_header.startswith('Bearer ') else ''
+        user = get_user_from_token(token)
+        if not user or user.status == 'inativo' or user.cargo not in ['admin', 'colaborador', 'operador']:
+            return JsonResponse({'erro': 'Não autorizado'}, status=401)
+
+        data = json.loads(request.body)
+        itens = data.get('itens', [])
+
+        if not itens:
+            return JsonResponse({'erro': 'Lista de itens é obrigatória'}, status=400)
+
+        with transaction.atomic():
+            for item in itens:
+                prod_id = item.get('id')
+                quantidade = float(item.get('quantidade', 0))
+                if not prod_id or quantidade <= 0:
+                    return JsonResponse({'erro': 'Cada item precisa de id e quantidade > 0'}, status=400)
+                try:
+                    product = Product.objects.get(pk=prod_id)
+                except Product.DoesNotExist:
+                    return JsonResponse({'erro': f'Produto com ID {prod_id} não encontrado'}, status=400)
+                product.estoque_atual += Decimal(str(quantidade))
+                product.save()
+
+            ActivityLog.objects.create(
+                id_usuario=user,
+                acao='AJUSTE_ESTOQUE_MANUAL',
+                descricao=f'Ajuste manual de estoque realizado por {user.nome or user.email} ({len(itens)} produto(s) ajustado(s)).'
+            )
+
+        return JsonResponse({'sucesso': True}, status=201)
+
+    except Exception as e:
+        return JsonResponse({'erro': str(e)}, status=500)
 
 
 # ==================== DONATION INTENTIONS API ====================

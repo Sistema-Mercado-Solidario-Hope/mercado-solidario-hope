@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/estoque/categorias', views.api_categorias),
     path('api/estoque/categorias/<int:pk>', views.api_categoria_detail),
     path('metas-produtos.html', views.metas_produtos_view),
+    path('doacao-manual.html', views.doacao_manual_view),
     path('cadastro.html', RedirectView.as_view(url='/login.html', permanent=False)),
     path('base.html', views.base_view),
 
@@ -38,6 +39,7 @@ urlpatterns = [
     path('api/estoque/produtos', views.api_produtos),
     path('api/estoque/produtos/<int:pk>', views.api_produto_detail),
     path('api/estoque/produtos/<int:pk>/quantidade', views.api_produto_quantidade),
+    path('api/estoque/ajuste', views.api_estoque_ajuste),
 
     path('api/beneficiarios', views.api_beneficiarios),
     path('api/beneficiarios/busca', views.api_beneficiarios_busca),
