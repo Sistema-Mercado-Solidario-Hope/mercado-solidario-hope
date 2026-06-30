@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         itensCatalogo.forEach(item => {
             const card = document.createElement('div');
             card.className = 'item-card';
+            card.dataset.nome = item.nome.toLowerCase();
             card.innerHTML = `
                 <div class="item-info">
                     <span style="font-size:24px">${item.icone}</span>
@@ -46,6 +47,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
             listaItens.appendChild(card);
+        });
+    }
+
+    // Filter items
+    const buscaInput = document.getElementById('busca-produto');
+    if (buscaInput) {
+        buscaInput.addEventListener('input', () => {
+            const term = buscaInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const cards = listaItens.querySelectorAll('.item-card');
+            cards.forEach(card => {
+                const name = card.dataset.nome || '';
+                const cleanName = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (cleanName.includes(term)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     }
 
