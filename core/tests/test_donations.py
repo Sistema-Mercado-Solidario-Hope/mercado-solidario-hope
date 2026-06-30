@@ -194,3 +194,48 @@ class DonationTests(TestCase):
         self.product.refresh_from_db()
         self.assertEqual(float(self.product.estoque_atual), 100.00)
 
+    def test_beneficiary_search_icontains_matches_accent_or_case(self):
+        # Create a beneficiary family with specific case (ASCII to be SQLite safe)
+        from core.models import BeneficiaryFamily
+        fam = BeneficiaryFamily.objects.create(
+            nome_familia='Familia Conceicao',
+            responsavel_nome='Joao Responsavel',
+            cpf='12345678901',
+            nis='98765432109',
+            telefone='47999887766',
+            status='ativo'
+        )
+
+        # Search using lowercase/sub-term
+        response = self.client.get(
+            '/api/beneficiarios/busca?q=conceicao',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue(len(data['beneficiarios']) >= 1)
+
+        # Verify the matching family ID
+        matched_ids = [b['id'] for b in data['beneficiarios']]
+        self.assertIn(fam.id_familia, matched_ids)
+
+    def test_donation_tracking_code_uniqueness(self):
+        from django.db import IntegrityError
+        # Create first donation intake
+        DonationIntake.objects.create(
+            nome_doador='Doador Um',
+            telefone_doador='(47) 99999-1111',
+            status_doacao='pendente',
+            codigo_rastreamento='TRACK-UNIQUE-123'
+        )
+
+        # Creating a second donation intake with identical tracking code should raise IntegrityError
+        with self.assertRaises(IntegrityError):
+            DonationIntake.objects.create(
+                nome_doador='Doador Dois',
+                telefone_doador='(47) 99999-2222',
+                status_doacao='pendente',
+                codigo_rastreamento='TRACK-UNIQUE-123'
+            )
+
+

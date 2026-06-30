@@ -34,11 +34,20 @@ if env_path.exists():
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-secret-key-fallback-value'
+    else:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured("A variável de ambiente SECRET_KEY precisa ser configurada em produção!")
+
+hosts_env = os.environ.get('ALLOWED_HOSTS')
+if hosts_env:
+    ALLOWED_HOSTS = [h.strip() for h in hosts_env.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['*'] if DEBUG else []
 
 
 # Application definition
@@ -119,9 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -132,3 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'

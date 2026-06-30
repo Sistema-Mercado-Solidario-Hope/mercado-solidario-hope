@@ -108,3 +108,44 @@ class ProductCRUDTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Product.objects.filter(pk=p.id_produto).exists())
+
+    def test_category_duplicate_name_fails(self):
+        # Create a category
+        Category.objects.create(nome='Higiene Pessoal')
+
+        # Try to post duplicate
+        payload = {'nome': 'higiene pessoal', 'descricao': 'Duplicate'}
+        response = self.client.post(
+            '/api/estoque/categorias',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 409)
+
+    def test_delete_category_with_products_fails(self):
+        cat = Category.objects.create(nome='Alimentos Frágeis')
+        Product.objects.create(
+            nome_produto='Ovos',
+            categoria=cat,
+            unidade_medida='un',
+            estoque_atual=100.00
+        )
+
+        response = self.client.delete(
+            f'/api/estoque/categorias/{cat.id_categoria}',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Não é possível excluir', json.loads(response.content)['erro'])
+
+    def test_create_product_missing_required_fields_fails(self):
+        payload = {'unidade': 'kg'} # Missing name and category
+        response = self.client.post(
+            '/api/estoque/produtos',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 400)
+

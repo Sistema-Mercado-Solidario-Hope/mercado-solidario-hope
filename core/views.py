@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import os
 import random
 import re
@@ -29,6 +30,14 @@ from core.models import (
     Product,
     Usuario,
 )
+
+logger = logging.getLogger(__name__)
+
+def handle_api_exception(e):
+    logger.exception("Erro interno na API")
+    if settings.DEBUG:
+        return JsonResponse({'erro': str(e)}, status=500)
+    return JsonResponse({'erro': 'Ocorreu um erro interno no servidor.'}, status=500)
 
 signer = Signer()
 
@@ -97,8 +106,8 @@ def save_base64_image(base64_str):
         with open(filepath, 'wb') as f:
             f.write(image_data)
         return f"/img/uploads/{filename}"
-    except Exception as e:
-        print(f"Error saving base64 image: {e}")
+    except Exception:
+        logger.exception("Error saving base64 image")
         return base64_str
 
 # Auth decorator for API views
@@ -218,7 +227,7 @@ def api_login(request):
 
         return JsonResponse({'erro': 'Credenciais inválidas.'}, status=401)
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 @csrf_exempt
 @api_auth_required
@@ -268,7 +277,7 @@ def api_usuario_perfil(request):
                 'telefone': user.telefone
             })
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
@@ -357,7 +366,7 @@ def api_produtos(request):
                 'quantidade': float(p.estoque_atual)
             }, status=201)
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
@@ -418,7 +427,7 @@ def api_produto_detail(request, pk):
                 'quantidade': float(p.estoque_atual)
             })
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     elif request.method == 'DELETE':
         if user.cargo != 'admin':
@@ -470,7 +479,7 @@ def api_produto_quantidade(request, pk):
             }
         })
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 
 # ==================== BENEFICIARIES API ====================
@@ -567,7 +576,7 @@ def api_beneficiarios(request):
             )
             return JsonResponse({'id': f.id_familia, 'nome': f.nome_familia}, status=201)
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
@@ -718,7 +727,7 @@ def api_beneficiario_detail(request, pk):
             )
             return JsonResponse({'id': f.id_familia, 'nome': f.nome_familia})
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     elif request.method == 'DELETE':
         if request.user.cargo != 'admin':
@@ -758,6 +767,10 @@ def api_entregas_confirmar(request):
 
         if family.status != 'ativo':
             return JsonResponse({'erro': 'Beneficiário inativo ou não elegível'}, status=422)
+
+        total_qty = sum(Decimal(str(item.get('quantidade', 0))) for item in itens if Decimal(str(item.get('quantidade', 0))) > 0)
+        if total_qty > family.cota_limite:
+            return JsonResponse({'erro': f'Limite de cota familiar excedido (Máximo: {family.cota_limite} itens)'}, status=422)
 
         # Atomically check and update stock levels to prevent corruption/concurrency issues
         with transaction.atomic():
@@ -825,7 +838,7 @@ def api_entregas_confirmar(request):
         }, status=201)
 
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 
 # ==================== CONFIGURATIONS API ====================
@@ -878,7 +891,7 @@ def api_configuracoes(request):
             )
             return JsonResponse({'sucesso': True})
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
@@ -962,7 +975,7 @@ def api_estoque_ajuste(request):
         return JsonResponse({'sucesso': True}, status=201)
 
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 
 # ==================== DONATION INTENTIONS API ====================
@@ -1048,7 +1061,7 @@ def api_intencao_doacao(request):
             }, status=201)
 
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     elif request.method == 'GET':
         # Requer autenticação
@@ -1156,7 +1169,7 @@ def api_intencao_doacao_status(request, pk):
 
         return JsonResponse({'sucesso': True})
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 
 @csrf_exempt
@@ -1211,7 +1224,7 @@ def api_usuarios(request):
             )
             return JsonResponse({'sucesso': True, 'id': user.id}, status=201)
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
@@ -1244,7 +1257,7 @@ def api_usuario_detail(request, pk):
             u.save()
             return JsonResponse({'sucesso': True})
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     elif request.method == 'DELETE':
         if u.id == request.user.id:
@@ -1350,7 +1363,7 @@ def api_dashboard_stats(request):
             'atividades_recentes': recent_activities
         })
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 
 @csrf_exempt
@@ -1400,7 +1413,7 @@ def api_notificacoes(request):
 
         return JsonResponse({'notificacoes': notifications_list})
     except Exception as e:
-        return JsonResponse({'erro': str(e)}, status=500)
+        return handle_api_exception(e)
 
 
 def gestao_categorias_view(request):
@@ -1449,7 +1462,7 @@ def api_categorias(request):
             )
             return JsonResponse({'id': c.id_categoria, 'nome': c.nome}, status=201)
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     return JsonResponse({'erro': 'Método não permitido'}, status=405)
 
@@ -1488,7 +1501,7 @@ def api_categoria_detail(request, pk):
             )
             return JsonResponse({'id': c.id_categoria, 'nome': c.nome})
         except Exception as e:
-            return JsonResponse({'erro': str(e)}, status=500)
+            return handle_api_exception(e)
 
     elif request.method == 'DELETE':
         if Product.objects.filter(categoria=c).exists():

@@ -27,6 +27,7 @@ class DeliveryTests(TestCase):
             nis='11122233344',
             telefone='(47) 99999-5555',
             status='ativo',
+            cota_limite=30,
             lgpd_accept=True
         )
 
@@ -110,4 +111,30 @@ class DeliveryTests(TestCase):
         self.assertEqual(len(data['entregas'][0]['itens']), 1)
         self.assertEqual(data['entregas'][0]['itens'][0]['produto_nome'], self.product.nome_produto)
         self.assertEqual(float(data['entregas'][0]['itens'][0]['quantidade']), 10.00)
+
+    def test_delivery_exceeding_cota_limite_fails(self):
+        # Configure a strict cota_limite of 5 items
+        self.family.cota_limite = 5
+        self.family.save()
+
+        # Try to deliver 8 items (exceeds quota of 5)
+        payload = {
+            'beneficiario_id': self.family.id_familia,
+            'itens': [
+                {'produto_id': self.product.id_produto, 'quantidade': 8.00}
+            ]
+        }
+        response = self.client.post(
+            '/api/entregas/confirmar',
+            data=json.dumps(payload),
+            content_type='application/json',
+            **self.headers
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertIn('Limite de cota familiar excedido', json.loads(response.content)['erro'])
+
+        # Stock should not change
+        self.product.refresh_from_db()
+        self.assertEqual(float(self.product.estoque_atual), 100.00)
+
 

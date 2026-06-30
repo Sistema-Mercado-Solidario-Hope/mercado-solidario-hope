@@ -39,3 +39,23 @@ class AuthAndRBACTests(TestCase):
         admin_headers = {'HTTP_AUTHORIZATION': f'Bearer {admin_token}'}
         response2 = self.client.get('/api/usuarios', **admin_headers)
         self.assertEqual(response2.status_code, 200)
+
+    def test_inactive_operator_unauthorized(self):
+        self.operator.status = 'inativo'
+        self.operator.save()
+
+        token = generate_token(self.operator)
+        headers = {'HTTP_AUTHORIZATION': f'Bearer {token}'}
+
+        response = self.client.get('/api/usuarios', **headers)
+        self.assertEqual(response.status_code, 401)
+
+    def test_invalid_token_signature_unauthorized(self):
+        invalid_headers = {'HTTP_AUTHORIZATION': 'Bearer invalid.signed.token.string'}
+        response = self.client.get('/api/usuarios', **invalid_headers)
+        self.assertEqual(response.status_code, 401)
+
+    def test_missing_auth_header_unauthorized(self):
+        response = self.client.get('/api/usuarios')
+        self.assertEqual(response.status_code, 401)
+
